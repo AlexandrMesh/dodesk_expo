@@ -1,0 +1,12 @@
+{
+  "todo": "To-do",
+  "completed": "Done",
+  "enterTaskTitle": "What need to do?",
+  "enterTaskDescription": "Describe the task in detail (optional)",
+  "newTask": "New task",
+  "taskTitle": "Title",
+  "taskDescription": "Description",
+  "taskStatus": "Status",
+  "createdAt": "Created at",
+  "completedAt": "Completed at"
+}

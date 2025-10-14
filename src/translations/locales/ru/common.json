@@ -1,0 +1,18 @@
+{
+  "save": "Сохранить",
+  "add": "Добавить",
+  "next": "Далее",
+  "back": "Назад",
+  "required": "*",
+  "choose": "Выбрать",
+  "cancel": "Отмена",
+  "remove": "Удалить",
+  "create": "Создать",
+  "requiredFields": "* обязательные поля",
+  "in": "в",
+  "today": "Сегодня",
+  "yesterday": "Вчера",
+  "updateAppVersionTitle": "Доступна новая версия",
+  "updateAppVersionDescription": "Обновите пожалуйста Ваше приложение до последней версии",
+  "update": "Обновить"
+}

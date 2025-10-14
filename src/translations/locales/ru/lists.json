@@ -1,0 +1,9 @@
+{
+  "enterListTitle": "Введите название списка",
+  "newList": "Новый список",
+  "listTitle": "Название",
+  "emptyListDescription": "Список задач пуст. Добавьте задачу",
+  "removeListTitle": "Удалить список",
+  "removeListDescription": "Список и все задачи в нём будут удалены",
+  "chooseList": "Выберите список"
+}

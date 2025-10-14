@@ -1,0 +1,18 @@
+{
+  "save": "Save",
+  "add": "Add",
+  "next": "Next",
+  "back": "Back",
+  "required": "*",
+  "choose": "Choose",
+  "cancel": "Cancel",
+  "remove": "Remove",
+  "create": "Create",
+  "requiredFields": "* required fields",
+  "in": "in",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "updateAppVersionTitle": "New version available",
+  "updateAppVersionDescription": "Please update your application to the latest version",
+  "update": "Update"
+}

@@ -1,0 +1,6 @@
+{
+  "hasNoValue": "Must not be empty",
+  "isTooLong": "Must be no more than {{maxLength}} characters",
+  "isTooShort": "Must be at least {{minLength}} characters",
+  "listExists": "List already exists"
+}

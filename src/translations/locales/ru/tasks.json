@@ -1,0 +1,12 @@
+{
+  "todo": "Надо сделать",
+  "completed": "Готово",
+  "enterTaskTitle": "Что надо сделать?",
+  "enterTaskDescription": "Подробно опишите задачу (не обязательно)",
+  "newTask": "Новая задача",
+  "taskTitle": "Название",
+  "taskDescription": "Описание",
+  "taskStatus": "Статус",
+  "createdAt": "Создано",
+  "completedAt": "Завершено"
+}
