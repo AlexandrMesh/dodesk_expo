@@ -9,6 +9,7 @@ import AddList from '~screens/Home/AddList';
 import AddTask from '~screens/Home/AddTask';
 import FullTask from '~screens/Home/FullTask';
 import Modals from '~screens/Modals/Modals';
+import BannerAd from '~UI/BannerAd';
 import UpdateAppAlert from './UpdateAppAlert';
 
 const Main = () => {
@@ -26,6 +27,7 @@ const Main = () => {
           </Stack.Navigator>
           <Modals />
           <UpdateAppAlert />
+          <BannerAd />
         </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>

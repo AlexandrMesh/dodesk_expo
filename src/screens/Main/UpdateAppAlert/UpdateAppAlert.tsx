@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as Application from 'expo-application';
+import Constants from 'expo-constants';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Linking } from 'react-native';
@@ -26,9 +26,12 @@ const UpdateAppAlert = ({ getAppInfo }: UpdateAppAlertProps) => {
     async function loadData() {
       try {
         const { error, version, updateUrl } = await getAppInfo();
-        const currentAppVersion = Application.nativeApplicationVersion || '';
-        if (!error && version && version !== currentAppVersion) {
-          createUpdateAppAlert(updateUrl);
+        const currentAppVersion = (Constants?.expoConfig?.version || '').trim();
+        const remoteVersion = (version || '').trim();
+        if (!error && remoteVersion && currentAppVersion && remoteVersion !== currentAppVersion) {
+          if (updateUrl) {
+            createUpdateAppAlert(updateUrl);
+          }
         }
       } catch (error) {
         console.error(error);
