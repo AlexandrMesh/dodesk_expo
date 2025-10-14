@@ -26,8 +26,8 @@ const BannerAd: React.FC = () => {
             adTheme: AdTheme.Dark,
             parameters: new Map<string, string>([
               ['param1', 'value1'],
-              ['param2', 'value2']
-            ])
+              ['param2', 'value2'],
+            ]),
           });
 
           const size = await BannerAdSize.stickySize(Dimensions.get('window').width);
@@ -51,7 +51,7 @@ const BannerAd: React.FC = () => {
   return (
     <BannerViewComp
       size={adSize}
-      adUnitId='R-M-17439463-3'
+      adUnitId='R-M-17488011-1'
       adRequest={adRequest}
       onAdLoaded={() => {}}
       onAdFailedToLoad={() => {}}
@@ -65,5 +65,3 @@ const BannerAd: React.FC = () => {
 };
 
 export default BannerAd;
-
-
