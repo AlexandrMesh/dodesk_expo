@@ -5,7 +5,6 @@ export default StyleSheet.create({
   topWrapper: {
     position: 'absolute',
     width: '100%',
-    height: '100%',
     top: 0,
     left: 0,
     right: 0,
@@ -35,7 +34,8 @@ export default StyleSheet.create({
     backgroundColor: colors.primary_dark,
     elevation: 6,
     borderTopRightRadius: 5,
-    borderTopLeftRadius: 5
+    borderTopLeftRadius: 5,
+    paddingBottom: 0
   },
   header: {
     display: 'flex',

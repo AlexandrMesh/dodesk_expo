@@ -1,6 +1,7 @@
 import { useBackHandler, useKeyboard } from '@react-native-community/hooks';
 import React, { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Animated, Dimensions, Pressable, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Button from '~UI/Button';
 import CloseIcon from '~assets/close.svg';
 import { CLOSE_ICON } from '~constants/dimensions';
@@ -30,7 +31,8 @@ const SlideMenu = ({
   menuHeight = 336
 }: SlideMenuProps) => {
   const keyboard = useKeyboard();
-  const windowHeight = Dimensions.get('screen').height; // full device height
+  const insets = useSafeAreaInsets();
+  const windowHeight = Dimensions.get('window').height; // visible window height
   const [calculatedMenuHeight, setCalculatedMenuHeight] = useState(menuHeight);
   const [shouldDIsplay, setShouldDisplay] = useState(false);
   const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(false);
@@ -57,14 +59,14 @@ const SlideMenu = ({
   });
 
   useLayoutEffect(() => {
-    const safeHeight = windowHeight; // keep small margin from top
+    const safeHeight = windowHeight - insets.bottom; // avoid overlapping system navigation bar
     if (keyboard.keyboardShown) {
       const target = safeHeight - keyboard.keyboardHeight;
       setCalculatedMenuHeight(target < menuHeight ? target : menuHeight);
     } else {
       setCalculatedMenuHeight(safeHeight < menuHeight ? safeHeight : menuHeight);
     }
-  }, [menuHeight, windowHeight, keyboard.keyboardHeight, keyboard.keyboardShown]);
+  }, [menuHeight, windowHeight, keyboard.keyboardHeight, keyboard.keyboardShown, insets.bottom]);
 
   useEffect(() => {
     if (isVisible) {
@@ -83,12 +85,15 @@ const SlideMenu = ({
 
   useEffect(() => {
     if (shouldDIsplay) {
-      Animated.spring(animatedHeight, {
+      // Start from the actual measured height to avoid any bottom gap
+      animatedHeight.setValue(calculatedMenuHeight);
+      Animated.timing(animatedHeight, {
         useNativeDriver: true,
-        toValue: 0
+        toValue: 0,
+        duration: 220
       }).start();
     }
-  }, [shouldDIsplay, animatedHeight]);
+  }, [shouldDIsplay, calculatedMenuHeight, animatedHeight]);
 
   const shouldShowModal = shouldDIsplay;
 
@@ -120,8 +125,8 @@ const SlideMenu = ({
             styles.animatedWrapper
           ]}
         >
-          <View style={styles.wrapper}>
-            <View style={styles.content}>
+            <View style={styles.wrapper}>
+              <View style={[styles.content, { paddingBottom: insets.bottom }]}>
               <View style={styles.header}>
                 <View style={styles.titleWrapper}>
                   <Text style={styles.title} numberOfLines={1}>
