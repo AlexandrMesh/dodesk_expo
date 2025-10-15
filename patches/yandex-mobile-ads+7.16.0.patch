@@ -128,5 +128,3 @@ index 678ad2d..6f693ba 100644
                  deleteAd(adObjectId)
                  promise.reject(PluginError.CurrentActivityIsNull)
                  return@runOnUiThread
-
-
