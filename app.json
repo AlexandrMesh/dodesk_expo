@@ -30,7 +30,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.dodesk",
       "usesCleartextTraffic": true,
-      "versionCode": 65
+      "versionCode": 9
     },
     "web": {
       "output": "static",
