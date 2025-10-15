@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#143757",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -43,25 +43,27 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/android-icon-foreground.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#09172a",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#09172a"
           }
         }
       ],
       "expo-updates"
     ],
-    "extra": {
-      "eas": {
-        "projectId": "8c50cb91-6c14-475d-9098-9608c1f742e3"
-      }
-    },
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "owner": "meshok",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "98955413-fb35-4096-81cc-0306c6a0e132"
+      }
     }
   }
 }
