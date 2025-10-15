@@ -4,6 +4,8 @@ import { Dimensions, View } from 'react-native';
 
 import Constants from 'expo-constants';
 
+import { setBannerHeight } from './metrics';
+
 const BannerAd: React.FC = () => {
   const [adSize, setAdSize] = React.useState<any>(null);
   const [BannerViewComponent, setBannerViewComponent] = React.useState<any>(null);
@@ -43,6 +45,7 @@ const BannerAd: React.FC = () => {
   }, [isExpoGo]);
 
   if (isExpoGo || !adSize || !BannerViewComponent || !adRequest) {
+    setBannerHeight(0);
     return <View />;
   }
 
@@ -53,13 +56,23 @@ const BannerAd: React.FC = () => {
       size={adSize}
       adUnitId='R-M-17488011-1'
       adRequest={adRequest}
-      onAdLoaded={() => {}}
-      onAdFailedToLoad={() => {}}
+      onAdLoaded={() => {
+        try {
+          // stickySize returns an object with height
+          const h = (adSize && (adSize as any).height) || 50;
+          setBannerHeight(h);
+        } catch {}
+      }}
+      onAdFailedToLoad={() => {
+        setBannerHeight(0);
+      }}
       onAdClicked={() => {}}
       onLeftApplication={() => {}}
       onReturnToApplication={() => {}}
       onAdImpression={() => {}}
-      onAdClose={() => {}}
+      onAdClose={() => {
+        setBannerHeight(0);
+      }}
     />
   );
 };
