@@ -130,7 +130,7 @@ const SlideMenu = ({
           ]}
         >
           <View style={styles.wrapper}>
-            <View style={[styles.content, { paddingBottom: insets.bottom + bannerHeight }]}>
+            <View style={[styles.content, { paddingBottom: insets.bottom }]}>
               <View style={styles.header}>
                 <View style={styles.titleWrapper}>
                   <Text style={styles.title} numberOfLines={1}>
