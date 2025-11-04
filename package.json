@@ -68,8 +68,7 @@
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "reselect": "^5.1.1",
-    "uuid": "^13.0.0",
-    "yandex-mobile-ads": "7.16.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
