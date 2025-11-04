@@ -9,7 +9,6 @@ import CloseIcon from '~assets/close.svg';
 import { CLOSE_ICON } from '~constants/dimensions';
 import { SECONDARY } from '~constants/themes';
 import colors from '~styles/colors';
-import { getBannerHeight, subscribeBannerHeight } from '~UI/BannerAd/metrics';
 import Button from '~UI/Button';
 
 import styles from './styles';
@@ -37,7 +36,6 @@ const SlideMenu = ({
 }: SlideMenuProps) => {
   const keyboard = useKeyboard();
   const insets = useSafeAreaInsets();
-  const [bannerHeight, setBannerHeight] = useState<number>(getBannerHeight());
   const windowHeight = Dimensions.get('window').height; // visible window height
   const [calculatedMenuHeight, setCalculatedMenuHeight] = useState(menuHeight);
   const [shouldDIsplay, setShouldDisplay] = useState(false);
@@ -65,19 +63,14 @@ const SlideMenu = ({
   });
 
   useLayoutEffect(() => {
-    const safeHeight = windowHeight - insets.bottom - bannerHeight; // avoid overlapping system bar and banner ad
+    const safeHeight = windowHeight - insets.bottom; // avoid overlapping system bar and banner ad
     if (keyboard.keyboardShown) {
       const target = safeHeight - keyboard.keyboardHeight;
       setCalculatedMenuHeight(target < menuHeight ? target : menuHeight);
     } else {
       setCalculatedMenuHeight(safeHeight < menuHeight ? safeHeight : menuHeight);
     }
-  }, [menuHeight, windowHeight, keyboard.keyboardHeight, keyboard.keyboardShown, insets.bottom, bannerHeight]);
-
-  useEffect(() => {
-    const unsub = subscribeBannerHeight(setBannerHeight);
-    return unsub;
-  }, []);
+  }, [menuHeight, windowHeight, keyboard.keyboardHeight, keyboard.keyboardShown, insets.bottom]);
 
   useEffect(() => {
     if (isVisible) {
