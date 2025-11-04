@@ -10,7 +10,6 @@ import AddList from '~screens/Home/AddList';
 import AddTask from '~screens/Home/AddTask';
 import FullTask from '~screens/Home/FullTask';
 import Modals from '~screens/Modals/Modals';
-import BannerAd from '~UI/BannerAd';
 
 import ReviewPrompt from './ReviewPrompt';
 import UpdateAppAlert from './UpdateAppAlert';
@@ -31,7 +30,6 @@ const Main = () => {
           <Modals />
           <UpdateAppAlert />
           <ReviewPrompt />
-          <BannerAd />
         </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>

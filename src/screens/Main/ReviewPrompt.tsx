@@ -15,5 +15,3 @@ const ReviewPrompt = () => {
 };
 
 export default ReviewPrompt;
-
-
