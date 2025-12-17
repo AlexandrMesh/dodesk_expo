@@ -1,24 +1,32 @@
 import React, { memo, useCallback } from 'react';
-import { View, Text, SectionList } from 'react-native';
-import { ITask } from '~types/tasks';
-import AddTaskButton from '~screens/Home/AddTaskButton';
+import { SectionList, Text, View } from 'react-native';
 import { ADD_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
-import Task from '../Task';
+import AddTaskButton from '~screens/Home/AddTaskButton';
+import { ITask } from '~types/tasks';
 import EmptyList from '../EmptyList';
+import Task from '../Task';
 import styles from './styles';
 
 type AllProps = {
   tasks: ITask[];
   sectionedTasks: { completed: boolean; completedCount: number; count: number; title: string; data: ITask[] }[];
   updateTaskStatus: ({ taskId, status, completed_at }: { taskId: string; status: string; completed_at: number }) => unknown;
+  subtasksMap: Record<string, ITask[]>;
 };
 
-const All = ({ tasks, updateTaskStatus, sectionedTasks }: AllProps) => {
+const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap }: AllProps) => {
   const currentDate = new Date();
   const completed_at = currentDate.getTime();
 
   const getKeyExtractor = useCallback((item: ITask) => item.id, []);
+
+  const handleSubtaskPress = useCallback(
+    (taskId: string, status: string) => {
+      updateTaskStatus({ taskId, status, completed_at: new Date().getTime() });
+    },
+    []
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: ITask }) => (
@@ -28,9 +36,12 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks }: AllProps) => {
         title={item.title}
         updated_at={item.created_at}
         onPress={() => updateTaskStatus({ taskId: item.id, status: item.status === COMPLETED ? TODO : COMPLETED, completed_at })}
+        subtasks={subtasksMap[item.id] || []}
+        onSubtaskPress={handleSubtaskPress}
+        onParentComplete={() => updateTaskStatus({ taskId: item.id, status: COMPLETED, completed_at: new Date().getTime() })}
       />
     ),
-    [completed_at, updateTaskStatus]
+    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress]
   );
 
   const renderSectionHeader = useCallback(

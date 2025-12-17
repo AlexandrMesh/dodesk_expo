@@ -7,4 +7,5 @@ export interface ITask {
   completed_at: number | null;
   listId: string;
   language: string;
+  parentId?: string | null;
 }

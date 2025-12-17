@@ -3,7 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
 import Button from '~UI/Button';
-import { EDIT_TASK_ROUTE } from '~constants/routes';
+import { ADD_TASK_ROUTE, EDIT_TASK_ROUTE } from '~constants/routes';
+import { TODO } from '~constants/statuses';
 import { SECONDARY } from '~constants/themes';
 import i18n from '~translations/i18n';
 import { ITask } from '~types/tasks';
@@ -30,6 +31,10 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
 
   const onTaskEdit = () => {
     navigation.navigate(EDIT_TASK_ROUTE, { taskId: id });
+  };
+
+  const onAddSubtask = () => {
+    navigation.navigate(ADD_TASK_ROUTE, { status: TODO, parentId: id });
   };
 
   return (
@@ -76,6 +81,7 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
         </ScrollView>
         <View style={styles.footerButtonsWrapper}>
           <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
+          <Button theme={SECONDARY} style={styles.footerButton} onPress={onAddSubtask} title={t('tasks:addSubtask')} />
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskEdit} title={t('common:edit')} />
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskRemove} title={t('common:remove')} />
         </View>

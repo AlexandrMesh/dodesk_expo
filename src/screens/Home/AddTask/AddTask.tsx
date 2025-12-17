@@ -1,19 +1,19 @@
-import 'react-native-get-random-values';
-import React, { useState } from 'react';
-import { View, ScrollView, TouchableHighlight, Text } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, Text, TouchableHighlight, View } from 'react-native';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import { COMPLETED, TODO } from '~constants/statuses';
+import { DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH } from '~constants/tasks';
+import { SECONDARY } from '~constants/themes';
 import i18n from '~translations/i18n';
-import Input from '~UI/TextInput';
+import { IList } from '~types/lists';
+import { ITask } from '~types/tasks';
 import Button from '~UI/Button';
 import RadioButton from '~UI/RadioButton';
+import Input from '~UI/TextInput';
 import { getValidationFailure, validationTypes } from '~utils/validation';
-import { ITask } from '~types/tasks';
-import { COMPLETED, TODO } from '~constants/statuses';
-import { SECONDARY } from '~constants/themes';
-import { IList } from '~types/lists';
-import { DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH } from '~constants/tasks';
 import styles from './styles';
 
 type AddTaskProps = {
@@ -45,6 +45,7 @@ const StatusItem = ({ status, isSelected, onPress }: StatusItemProps) => {
 const AddTask = ({ addTask, selectedList }: AddTaskProps) => {
   const { t } = useTranslation(['tasks', 'common', 'errors']);
   const route = useRoute<any>();
+  const parentId = route.params?.parentId || null;
 
   const [title, setTitle] = useState<string>('');
   const [titleError, setTitleError] = useState<string>('');
@@ -85,7 +86,8 @@ const AddTask = ({ addTask, selectedList }: AddTaskProps) => {
         created_at,
         completed_at: 0,
         listId: selectedList?.id,
-        language: i18n.language
+        language: i18n.language,
+        parentId
       });
       navigation.goBack();
     }
@@ -115,7 +117,7 @@ const AddTask = ({ addTask, selectedList }: AddTaskProps) => {
     <View style={styles.content}>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('tasks:newTask')}</Text>
+          <Text style={styles.title}>{parentId ? t('tasks:newSubtask') : t('tasks:newTask')}</Text>
           <Text numberOfLines={1} style={styles.subTitle}>
             {t('common:in')} {selectedList?.title}
           </Text>
