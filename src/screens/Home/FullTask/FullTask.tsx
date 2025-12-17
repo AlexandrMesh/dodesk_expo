@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import Button from '~UI/Button';
 import { ADD_TASK_ROUTE, EDIT_TASK_ROUTE } from '~constants/routes';
 import { TODO } from '~constants/statuses';
@@ -20,7 +20,8 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
   const { t } = useTranslation(['tasks', 'common']);
   const navigation = useNavigation<any>();
 
-  const { id, title, description, status, created_at, completed_at } = task;
+  const { id, title, description, status, created_at, completed_at, parentId } = task;
+  const isSubtask = !!parentId;
 
   const displayDate = (date: number) => `${showRelativeDate(date)} ${t('common:in')} ${new Date(date).toLocaleTimeString(i18n.language)}`;
 
@@ -42,6 +43,11 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <Text selectable style={styles.title}>{title}</Text>
+          {!isSubtask && (
+            <Pressable style={styles.addSubtaskButton} onPress={onAddSubtask}>
+              <Text style={styles.addSubtaskIcon}>+</Text>
+            </Pressable>
+          )}
         </View>
 
         <ScrollView style={styles.scrollWrapper} keyboardShouldPersistTaps='handled'>
@@ -81,7 +87,6 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
         </ScrollView>
         <View style={styles.footerButtonsWrapper}>
           <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={onAddSubtask} title={t('tasks:addSubtask')} />
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskEdit} title={t('common:edit')} />
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskRemove} title={t('common:remove')} />
         </View>

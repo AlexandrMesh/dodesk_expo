@@ -28,6 +28,7 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     borderBottomColor: colors.neutral_medium,
     borderBottomWidth: 1
   },
@@ -35,7 +36,25 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: 5,
     fontSize: 22,
-    color: colors.neutral_light
+    color: colors.neutral_light,
+    flex: 1
+  },
+  addSubtaskButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: colors.neutral_medium,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10
+  },
+  addSubtaskIcon: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.neutral_medium,
+    marginTop: -2
   },
   block: {
     marginTop: 15,

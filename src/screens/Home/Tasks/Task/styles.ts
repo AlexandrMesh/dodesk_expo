@@ -19,7 +19,7 @@ export default StyleSheet.create({
   },
   leftButtons: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     marginRight: 8
   },
@@ -32,7 +32,7 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 6
+    marginBottom: 6
   },
   addSubtaskIcon: {
     fontSize: 18,
@@ -86,7 +86,7 @@ export default StyleSheet.create({
   },
   subtasksContainer: {
     marginTop: 15,
-    marginLeft: 62,
+    marginLeft: 36,
     paddingLeft: 0
   },
   subtask: {
