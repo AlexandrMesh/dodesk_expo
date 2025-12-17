@@ -15,5 +15,7 @@
   "yesterday": "Yesterday",
   "updateAppVersionTitle": "New version available",
   "updateAppVersionDescription": "Please update your application to the latest version",
-  "update": "Update"
+  "update": "Update",
+  "confirmDelete": "Delete task?",
+  "confirmDeleteMessage": "This action cannot be undone"
 }

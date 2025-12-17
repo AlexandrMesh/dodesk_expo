@@ -20,41 +20,73 @@ export default StyleSheet.create({
   },
   scrollWrapper: {
     flex: 1,
-    paddingHorizontal: 10
+    paddingHorizontal: 15,
+    paddingTop: 10
   },
   header: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     borderBottomColor: colors.neutral_medium,
     borderBottomWidth: 1
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6
+  },
   title: {
     fontWeight: 'bold',
-    paddingBottom: 5,
     fontSize: 22,
-    color: colors.neutral_light
+    color: colors.neutral_light,
+    marginLeft: 10
   },
   subTitle: {
-    display: 'flex',
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 18,
-    color: colors.neutral_medium
+    fontSize: 14,
+    color: colors.neutral_medium,
+    marginTop: 4
+  },
+  inputCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15
+  },
+  inputHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  inputLabel: {
+    color: colors.neutral_light,
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+    flex: 1
+  },
+  inputCounter: {
+    color: colors.neutral_medium,
+    fontSize: 12
   },
   statuses: {
-    paddingBottom: 25
+    paddingBottom: 10
   },
   statusWrapper: {
-    paddingVertical: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 10,
+    marginBottom: 8
+  },
+  statusWrapperSelected: {
+    backgroundColor: 'rgba(62, 158, 213, 0.15)',
+    borderWidth: 1,
+    borderColor: colors.in_progress
   },
   block: {
-    marginTop: 15
+    marginTop: 0
   },
   inputWrapper: {
     marginBottom: 10,
@@ -64,26 +96,38 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   radioButton: {
-    marginRight: 10
+    marginRight: 12
   },
-  inputLabel: {
+  statusLabel: {
     color: colors.neutral_light,
-    fontSize: 18
+    fontSize: 16
   },
   descriptionWrapperClassName: {
-    height: 230
+    height: 180
   },
   descriptionInput: {
-    height: 200,
+    height: 150,
     textAlignVertical: 'top'
   },
   footerButtonsWrapper: {
     paddingTop: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12
+  },
+  actionButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
     alignItems: 'center'
+  },
+  saveButton: {
+    backgroundColor: colors.in_progress
   },
   footerButton: {
     maxWidth: 160,

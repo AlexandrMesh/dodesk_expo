@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useState } from 'react';
 import { Pressable, Text, TouchableHighlight, View } from 'react-native';
@@ -45,25 +46,31 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
   };
 
   return (
-    <View style={styles.task}>
+    <View style={[styles.task, completed && styles.taskCompleted]}>
       <View style={styles.taskTitleWrapper}>
         <View style={styles.leftButtons}>
           <Pressable style={styles.addSubtaskButton} onPress={handleAddSubtask}>
-            <Text style={styles.addSubtaskIcon}>+</Text>
+            <Ionicons name="add" size={16} color={colors.neutral_medium} />
           </Pressable>
           {hasSubtasks && (
             <Pressable style={styles.expandButton} onPress={() => setExpanded(!expanded)}>
-              <Text style={styles.expandIcon}>{expanded ? '▾' : '▸'}</Text>
+              <Ionicons name={expanded ? 'chevron-down' : 'chevron-forward'} size={14} color={colors.neutral_medium} />
             </Pressable>
           )}
         </View>
         <TouchableHighlight style={styles.titleWrapper} onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: id })}>
           <View>
-            <Text style={[styles.taskTitle, completed && styles.completedTitle]}>{title}</Text>
+            <Text style={[styles.taskTitle, completed && styles.completedTitle]} numberOfLines={2}>{title}</Text>
             <View style={styles.footer}>
-              <Text style={styles.taskCreatedAt}>{new Date(updated_at).toLocaleTimeString(i18n.language)}</Text>
+              <View style={styles.footerLeft}>
+                <Ionicons name="time-outline" size={12} color={colors.neutral_medium} />
+                <Text style={styles.taskCreatedAt}>{new Date(updated_at).toLocaleTimeString(i18n.language)}</Text>
+              </View>
               {hasSubtasks && (
-                <Text style={styles.subtaskCount}>{completedSubtasksCount}/{subtasks.length}</Text>
+                <View style={styles.subtaskBadge}>
+                  <Ionicons name="git-branch-outline" size={12} color={colors.neutral_white} />
+                  <Text style={styles.subtaskCount}>{completedSubtasksCount}/{subtasks.length}</Text>
+                </View>
               )}
             </View>
           </View>
@@ -86,12 +93,15 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
                   onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: subtask.id })}
                 >
                   <View>
-                    <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]}>
+                    <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]} numberOfLines={1}>
                       {subtask.title}
                     </Text>
-                    <Text style={styles.subtaskCreatedAt}>
-                      {new Date(subtask.created_at).toLocaleTimeString(i18n.language)}
-                    </Text>
+                    <View style={styles.subtaskFooter}>
+                      <Ionicons name="time-outline" size={10} color={colors.neutral_medium} />
+                      <Text style={styles.subtaskCreatedAt}>
+                        {new Date(subtask.created_at).toLocaleTimeString(i18n.language)}
+                      </Text>
+                    </View>
                   </View>
                 </TouchableHighlight>
                 <Pressable 

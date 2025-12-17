@@ -1,13 +1,13 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, TouchableHighlight, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { COMPLETED, TODO } from '~constants/statuses';
 import { DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH } from '~constants/tasks';
-import { SECONDARY } from '~constants/themes';
+import colors from '~styles/colors';
 import { IList } from '~types/lists';
 import { ITask } from '~types/tasks';
-import Button from '~UI/Button';
 import RadioButton from '~UI/RadioButton';
 import Input from '~UI/TextInput';
 import { getValidationFailure, validationTypes } from '~utils/validation';
@@ -29,14 +29,16 @@ const StatusItem = ({ status, isSelected, onPress }: StatusItemProps) => {
   const { t } = useTranslation(['tasks']);
 
   return (
-    <TouchableHighlight onPress={onPress}>
-      <View style={styles.statusWrapper}>
+    <Pressable onPress={onPress}>
+      <View style={[styles.statusWrapper, isSelected && styles.statusWrapperSelected]}>
         <RadioButton isSelected={isSelected} style={styles.radioButton} />
-        <Text numberOfLines={1} style={styles.inputLabel}>
+        <Text numberOfLines={1} style={styles.statusLabel}>
           {t(`tasks:${status}`)}
         </Text>
+        {status === COMPLETED && <Ionicons name="checkmark-circle" size={18} color={isSelected ? colors.success : colors.neutral_medium} style={{ marginLeft: 'auto' }} />}
+        {status === TODO && <Ionicons name="time-outline" size={18} color={isSelected ? colors.in_progress : colors.neutral_medium} style={{ marginLeft: 'auto' }} />}
       </View>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
@@ -106,19 +108,23 @@ const EditTask = ({ task, updateTask, selectedList }: EditTaskProps) => {
     <View style={styles.content}>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('tasks:editTask')}</Text>
+          <View style={styles.headerRow}>
+            <Ionicons name="create-outline" size={24} color={colors.planned} />
+            <Text style={styles.title}>{t('tasks:editTask')}</Text>
+          </View>
           <Text numberOfLines={1} style={styles.subTitle}>
             {t('common:in')} {selectedList?.title}
           </Text>
         </View>
 
         <ScrollView style={styles.scrollWrapper} keyboardShouldPersistTaps='handled'>
-          <View style={styles.block}>
-            <View style={styles.inputWrapper}>
+          <View style={styles.inputCard}>
+            <View style={styles.inputHeader}>
+              <Ionicons name="text-outline" size={18} color={colors.neutral_medium} />
               <Text style={styles.inputLabel}>
                 {t('tasks:taskTitle')} {t('common:required')}
               </Text>
-              <Text style={styles.inputLabel}>{`${title.trim().length}/${TITLE_MAX_LENGTH}`}</Text>
+              <Text style={styles.inputCounter}>{`${title.trim().length}/${TITLE_MAX_LENGTH}`}</Text>
             </View>
 
             <Input
@@ -131,10 +137,11 @@ const EditTask = ({ task, updateTask, selectedList }: EditTaskProps) => {
             />
           </View>
 
-          <View>
-            <View style={styles.inputWrapper}>
+          <View style={styles.inputCard}>
+            <View style={styles.inputHeader}>
+              <Ionicons name="document-text-outline" size={18} color={colors.neutral_medium} />
               <Text style={styles.inputLabel}>{t('taskDescription')}</Text>
-              <Text style={styles.inputLabel}>{`${description.trim().length}/${DESCRIPTION_MAX_LENGTH}`}</Text>
+              <Text style={styles.inputCounter}>{`${description.trim().length}/${DESCRIPTION_MAX_LENGTH}`}</Text>
             </View>
 
             <Input
@@ -151,8 +158,9 @@ const EditTask = ({ task, updateTask, selectedList }: EditTaskProps) => {
             />
           </View>
 
-          <View>
-            <View style={styles.inputWrapper}>
+          <View style={styles.inputCard}>
+            <View style={styles.inputHeader}>
+              <Ionicons name="flag-outline" size={18} color={colors.neutral_medium} />
               <Text style={styles.inputLabel}>{t('taskStatus')}</Text>
             </View>
 
@@ -162,9 +170,14 @@ const EditTask = ({ task, updateTask, selectedList }: EditTaskProps) => {
             </View>
           </View>
         </ScrollView>
+
         <View style={styles.footerButtonsWrapper}>
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
-          <Button style={styles.footerButton} onPress={handleUpdateTask} title={t('common:save')} />
+          <Pressable style={styles.actionButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={20} color={colors.neutral_light} />
+          </Pressable>
+          <Pressable style={[styles.actionButton, styles.saveButton]} onPress={handleUpdateTask}>
+            <Ionicons name="checkmark" size={24} color={colors.neutral_white} />
+          </Pressable>
         </View>
       </View>
     </View>

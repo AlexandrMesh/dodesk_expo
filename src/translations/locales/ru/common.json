@@ -15,5 +15,7 @@
   "yesterday": "Вчера",
   "updateAppVersionTitle": "Доступна новая версия",
   "updateAppVersionDescription": "Обновите пожалуйста Ваше приложение до последней версии",
-  "update": "Обновить"
+  "update": "Обновить",
+  "confirmDelete": "Удалить задачу?",
+  "confirmDeleteMessage": "Это действие нельзя отменить"
 }

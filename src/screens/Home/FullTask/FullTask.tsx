@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { ADD_TASK_ROUTE, EDIT_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
 import colors from '~styles/colors';
@@ -27,8 +27,21 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
   const displayDate = (date: number) => `${showRelativeDate(date)} ${t('common:in')} ${new Date(date).toLocaleTimeString(i18n.language)}`;
 
   const onTaskRemove = () => {
-    removeTask(id);
-    navigation.goBack();
+    Alert.alert(
+      t('common:confirmDelete'),
+      t('common:confirmDeleteMessage'),
+      [
+        { text: t('common:cancel'), style: 'cancel' },
+        { 
+          text: t('common:remove'), 
+          style: 'destructive',
+          onPress: () => {
+            removeTask(id);
+            navigation.goBack();
+          }
+        }
+      ]
+    );
   };
 
   const onTaskEdit = () => {
