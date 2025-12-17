@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useState } from 'react';
 import { Pressable, Text, TouchableHighlight, View } from 'react-native';
-import { FULL_TASK_ROUTE } from '~constants/routes';
+import { ADD_TASK_ROUTE, FULL_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
 import colors from '~styles/colors';
 import i18n from '~translations/i18n';
@@ -40,27 +40,34 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
     }
   };
 
+  const handleAddSubtask = () => {
+    navigation.navigate(ADD_TASK_ROUTE, { status: TODO, parentId: id });
+  };
+
   return (
     <View style={styles.task}>
       <View style={styles.taskTitleWrapper}>
-        <View style={styles.titleRow}>
+        <View style={styles.leftButtons}>
+          <Pressable style={styles.addSubtaskButton} onPress={handleAddSubtask}>
+            <Text style={styles.addSubtaskIcon}>+</Text>
+          </Pressable>
           {hasSubtasks && (
             <Pressable style={styles.expandButton} onPress={() => setExpanded(!expanded)}>
-              <Text style={styles.expandIcon}>{expanded ? '▼' : '▶'}</Text>
+              <Text style={styles.expandIcon}>{expanded ? '▾' : '▸'}</Text>
             </Pressable>
           )}
-          <TouchableHighlight style={[styles.titleWrapper, !hasSubtasks && styles.titleWrapperNoSubtasks]} onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: id })}>
-            <View>
-              <Text style={[styles.taskTitle, completed && styles.completedTitle]}>{title}</Text>
-              <View style={styles.footer}>
-                <Text style={styles.taskCreatedAt}>{new Date(updated_at).toLocaleTimeString(i18n.language)}</Text>
-                {hasSubtasks && (
-                  <Text style={styles.subtaskCount}>{completedSubtasksCount}/{subtasks.length}</Text>
-                )}
-              </View>
-            </View>
-          </TouchableHighlight>
         </View>
+        <TouchableHighlight style={styles.titleWrapper} onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: id })}>
+          <View>
+            <Text style={[styles.taskTitle, completed && styles.completedTitle]}>{title}</Text>
+            <View style={styles.footer}>
+              <Text style={styles.taskCreatedAt}>{new Date(updated_at).toLocaleTimeString(i18n.language)}</Text>
+              {hasSubtasks && (
+                <Text style={styles.subtaskCount}>{completedSubtasksCount}/{subtasks.length}</Text>
+              )}
+            </View>
+          </View>
+        </TouchableHighlight>
         <View>
           <Pressable style={styles.checkBoxWrapper} onPress={onPress}>
             <CheckBox color={completed ? colors.neutral_medium : ''} isChecked={completed} />
@@ -78,9 +85,14 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
                   style={styles.subtaskTitleWrapper} 
                   onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: subtask.id })}
                 >
-                  <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]}>
-                    {subtask.title}
-                  </Text>
+                  <View>
+                    <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]}>
+                      {subtask.title}
+                    </Text>
+                    <Text style={styles.subtaskCreatedAt}>
+                      {new Date(subtask.created_at).toLocaleTimeString(i18n.language)}
+                    </Text>
+                  </View>
                 </TouchableHighlight>
                 <Pressable 
                   style={styles.subtaskCheckBox} 

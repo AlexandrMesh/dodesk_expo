@@ -5,6 +5,7 @@ export default StyleSheet.create({
   task: {
     padding: 15,
     paddingRight: 5,
+    paddingLeft: 10,
     marginBottom: 10,
     borderWidth: 2,
     borderRadius: 5,
@@ -13,34 +14,49 @@ export default StyleSheet.create({
   taskTitleWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
   },
-  titleRow: {
+  leftButtons: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    flex: 1
+    alignItems: 'center',
+    marginRight: 8
+  },
+  addSubtaskButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: colors.neutral_medium,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 6
+  },
+  addSubtaskIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.neutral_medium,
+    marginTop: -2
   },
   titleWrapper: {
     flex: 1,
     marginRight: 10
   },
-  titleWrapperNoSubtasks: {
-    marginLeft: 0
-  },
   expandButton: {
-    width: 32,
-    height: 32,
-    marginRight: 8,
-    borderRadius: 16,
-    backgroundColor: colors.neutral_medium,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.in_progress,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
   },
   expandIcon: {
-    fontSize: 14,
-    color: colors.primary_dark
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.neutral_white
   },
   taskTitle: {
     fontSize: 22,
@@ -70,7 +86,7 @@ export default StyleSheet.create({
   },
   subtasksContainer: {
     marginTop: 15,
-    marginLeft: 16,
+    marginLeft: 62,
     paddingLeft: 0
   },
   subtask: {
@@ -97,6 +113,11 @@ export default StyleSheet.create({
   subtaskTitle: {
     fontSize: 16,
     color: colors.neutral_light
+  },
+  subtaskCreatedAt: {
+    fontSize: 12,
+    color: colors.neutral_medium,
+    marginTop: 4
   },
   subtaskCheckBox: {
     paddingHorizontal: 8
