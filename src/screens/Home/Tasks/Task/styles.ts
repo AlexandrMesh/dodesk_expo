@@ -48,15 +48,16 @@ export default StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.in_progress,
+    borderWidth: 2,
+    borderColor: colors.neutral_medium,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
   },
   expandIcon: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: colors.neutral_white
+    color: colors.neutral_medium
   },
   taskTitle: {
     fontSize: 22,

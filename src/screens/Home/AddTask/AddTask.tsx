@@ -19,6 +19,7 @@ import styles from './styles';
 type AddTaskProps = {
   addTask: (params: ITask) => unknown;
   selectedList: IList;
+  parentTask: ITask | null;
 };
 
 type StatusItemProps = {
@@ -42,7 +43,7 @@ const StatusItem = ({ status, isSelected, onPress }: StatusItemProps) => {
   );
 };
 
-const AddTask = ({ addTask, selectedList }: AddTaskProps) => {
+const AddTask = ({ addTask, selectedList, parentTask }: AddTaskProps) => {
   const { t } = useTranslation(['tasks', 'common', 'errors']);
   const route = useRoute<any>();
   const parentId = route.params?.parentId || null;
@@ -119,7 +120,7 @@ const AddTask = ({ addTask, selectedList }: AddTaskProps) => {
         <View style={styles.header}>
           <Text style={styles.title}>{parentId ? t('tasks:newSubtask') : t('tasks:newTask')}</Text>
           <Text numberOfLines={1} style={styles.subTitle}>
-            {t('common:in')} {selectedList?.title}
+            {parentTask ? `${t('tasks:forTask')}: ${parentTask.title}` : `${t('common:in')} ${selectedList?.title}`}
           </Text>
         </View>
 

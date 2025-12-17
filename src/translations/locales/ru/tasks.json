@@ -12,5 +12,8 @@
   "createdAt": "Создано",
   "completedAt": "Завершено",
   "copied": "Скопировано",
-  "addSubtask": "+ Под"
+  "addSubtask": "+ Под",
+  "forTask": "Для задачи",
+  "task": "Задача",
+  "subtask": "Подзадача"
 }

@@ -12,5 +12,8 @@
   "createdAt": "Created at",
   "completedAt": "Completed at",
   "copied": "Copied",
-  "addSubtask": "+ Sub"
+  "addSubtask": "+ Sub",
+  "forTask": "For task",
+  "task": "Task",
+  "subtask": "Subtask"
 }

@@ -20,65 +20,136 @@ export default StyleSheet.create({
   },
   scrollWrapper: {
     flex: 1,
-    paddingHorizontal: 10
+    paddingHorizontal: 15,
+    paddingTop: 10
   },
   header: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     borderBottomColor: colors.neutral_medium,
     borderBottomWidth: 1
   },
+  headerLeft: {
+    flex: 1,
+    marginRight: 10
+  },
+  typeTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.in_progress,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginBottom: 8
+  },
+  subtaskTag: {
+    backgroundColor: colors.planned
+  },
+  typeTagText: {
+    color: colors.neutral_white,
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4
+  },
   title: {
     fontWeight: 'bold',
-    paddingBottom: 5,
     fontSize: 22,
-    color: colors.neutral_light,
-    flex: 1
+    color: colors.neutral_light
   },
   addSubtaskButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 2,
     borderColor: colors.neutral_medium,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10
-  },
-  addSubtaskIcon: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.neutral_medium,
-    marginTop: -2
-  },
-  block: {
-    marginTop: 15,
-    display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center'
   },
-  label: {
-    color: colors.neutral_light,
-    fontSize: 18
+  infoCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15
   },
-  bold: {
-    fontWeight: 'bold'
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8
+  },
+  infoIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12
+  },
+  infoContent: {
+    flex: 1
+  },
+  infoLabel: {
+    color: colors.neutral_medium,
+    fontSize: 12,
+    marginBottom: 2
+  },
+  infoValue: {
+    color: colors.neutral_light,
+    fontSize: 16
+  },
+  completedText: {
+    color: colors.success
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginVertical: 5
+  },
+  descriptionCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15
+  },
+  descriptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  descriptionLabel: {
+    color: colors.neutral_medium,
+    fontSize: 14,
+    marginLeft: 8
+  },
+  descriptionText: {
+    color: colors.neutral_light,
+    fontSize: 16,
+    lineHeight: 24
   },
   footerButtonsWrapper: {
     paddingTop: 10,
+    paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12
+  },
+  actionButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
     alignItems: 'center'
   },
-  footerButton: {
-    maxWidth: 90,
-    marginHorizontal: 3,
-    paddingHorizontal: 8
+  deleteButton: {
+    backgroundColor: 'rgba(242, 76, 103, 0.15)'
   }
 });

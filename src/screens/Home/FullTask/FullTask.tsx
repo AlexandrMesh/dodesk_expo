@@ -1,11 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import Button from '~UI/Button';
 import { ADD_TASK_ROUTE, EDIT_TASK_ROUTE } from '~constants/routes';
-import { TODO } from '~constants/statuses';
-import { SECONDARY } from '~constants/themes';
+import { COMPLETED, TODO } from '~constants/statuses';
+import colors from '~styles/colors';
 import i18n from '~translations/i18n';
 import { ITask } from '~types/tasks';
 import showRelativeDate from '~utils/relativeDate';
@@ -22,6 +22,7 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
 
   const { id, title, description, status, created_at, completed_at, parentId } = task;
   const isSubtask = !!parentId;
+  const isCompleted = status === COMPLETED;
 
   const displayDate = (date: number) => `${showRelativeDate(date)} ${t('common:in')} ${new Date(date).toLocaleTimeString(i18n.language)}`;
 
@@ -42,53 +43,93 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
     <View style={styles.content}>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <Text selectable style={styles.title}>{title}</Text>
+          <View style={styles.headerLeft}>
+            <View style={[styles.typeTag, isSubtask && styles.subtaskTag]}>
+              <Ionicons 
+                name={isSubtask ? 'git-branch-outline' : 'checkbox-outline'} 
+                size={14} 
+                color={colors.neutral_white} 
+              />
+              <Text style={styles.typeTagText}>
+                {isSubtask ? t('tasks:subtask') : t('tasks:task')}
+              </Text>
+            </View>
+            <Text selectable style={styles.title}>{title}</Text>
+          </View>
           {!isSubtask && (
             <Pressable style={styles.addSubtaskButton} onPress={onAddSubtask}>
-              <Text style={styles.addSubtaskIcon}>+</Text>
+              <Ionicons name="add" size={20} color={colors.neutral_medium} />
             </Pressable>
           )}
         </View>
 
         <ScrollView style={styles.scrollWrapper} keyboardShouldPersistTaps='handled'>
-          <View>
-            <View style={styles.block}>
-              <Text style={[styles.label, styles.bold]}>{`${t('tasks:taskStatus')}: `}</Text>
-              <Text selectable style={styles.label}>{t(`tasks:${status}`)}</Text>
-            </View>
-          </View>
-
-          <View>
-            <View style={styles.block}>
-              <Text style={[styles.label, styles.bold]}>{`${t('tasks:createdAt')}: `}</Text>
-              <Text selectable style={styles.label}>{displayDate(created_at)}</Text>
-            </View>
-          </View>
-
-          {!!completed_at && (
-            <View>
-              <View style={styles.block}>
-                <Text style={[styles.label, styles.bold]}>{`${t('tasks:completedAt')}: `}</Text>
-                <Text selectable style={styles.label}>{displayDate(completed_at)}</Text>
+          <View style={styles.infoCard}>
+            <View style={styles.infoRow}>
+              <View style={styles.infoIcon}>
+                <Ionicons 
+                  name={isCompleted ? 'checkmark-circle' : 'time-outline'} 
+                  size={20} 
+                  color={isCompleted ? colors.success : colors.in_progress} 
+                />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>{t('tasks:taskStatus')}</Text>
+                <Text style={[styles.infoValue, isCompleted && styles.completedText]}>
+                  {t(`tasks:${status}`)}
+                </Text>
               </View>
             </View>
-          )}
+
+            <View style={styles.divider} />
+
+            <View style={styles.infoRow}>
+              <View style={styles.infoIcon}>
+                <Ionicons name="calendar-outline" size={20} color={colors.neutral_medium} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>{t('tasks:createdAt')}</Text>
+                <Text selectable style={styles.infoValue}>{displayDate(created_at)}</Text>
+              </View>
+            </View>
+
+            {!!completed_at && (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.infoRow}>
+                  <View style={styles.infoIcon}>
+                    <Ionicons name="checkmark-done-outline" size={20} color={colors.success} />
+                  </View>
+                  <View style={styles.infoContent}>
+                    <Text style={styles.infoLabel}>{t('tasks:completedAt')}</Text>
+                    <Text selectable style={styles.infoValue}>{displayDate(completed_at)}</Text>
+                  </View>
+                </View>
+              </>
+            )}
+          </View>
 
           {!!description && (
-            <View>
-              <View style={styles.block}>
-                <View>
-                  <Text style={[styles.label, styles.bold]}>{`${t('tasks:taskDescription')}: `}</Text>
-                  <Text selectable style={styles.label}>{description}</Text>
-                </View>
+            <View style={styles.descriptionCard}>
+              <View style={styles.descriptionHeader}>
+                <Ionicons name="document-text-outline" size={18} color={colors.neutral_medium} />
+                <Text style={styles.descriptionLabel}>{t('tasks:taskDescription')}</Text>
               </View>
+              <Text selectable style={styles.descriptionText}>{description}</Text>
             </View>
           )}
         </ScrollView>
+
         <View style={styles.footerButtonsWrapper}>
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskEdit} title={t('common:edit')} />
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskRemove} title={t('common:remove')} />
+          <Pressable style={styles.actionButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={20} color={colors.neutral_light} />
+          </Pressable>
+          <Pressable style={styles.actionButton} onPress={onTaskEdit}>
+            <Ionicons name="create-outline" size={20} color={colors.neutral_light} />
+          </Pressable>
+          <Pressable style={[styles.actionButton, styles.deleteButton]} onPress={onTaskRemove}>
+            <Ionicons name="trash-outline" size={20} color={colors.error} />
+          </Pressable>
         </View>
       </View>
     </View>
