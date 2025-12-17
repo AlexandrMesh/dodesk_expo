@@ -4,9 +4,11 @@
   "enterTaskTitle": "What need to do?",
   "enterTaskDescription": "Describe the task in detail (optional)",
   "newTask": "New task",
+  "editTask": "Edit task",
   "taskTitle": "Title",
   "taskDescription": "Description",
   "taskStatus": "Status",
   "createdAt": "Created at",
-  "completedAt": "Completed at"
+  "completedAt": "Completed at",
+  "copied": "Copied"
 }

@@ -58,7 +58,8 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   footerButton: {
-    maxWidth: 160,
-    marginHorizontal: 10
+    maxWidth: 120,
+    marginHorizontal: 5,
+    paddingHorizontal: 10
   }
 });

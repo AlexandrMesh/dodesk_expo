@@ -4,9 +4,11 @@
   "enterTaskTitle": "Что надо сделать?",
   "enterTaskDescription": "Подробно опишите задачу (не обязательно)",
   "newTask": "Новая задача",
+  "editTask": "Редактирование задачи",
   "taskTitle": "Название",
   "taskDescription": "Описание",
   "taskStatus": "Статус",
   "createdAt": "Создано",
-  "completedAt": "Завершено"
+  "completedAt": "Завершено",
+  "copied": "Скопировано"
 }

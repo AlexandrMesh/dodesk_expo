@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, ScrollView, Text } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, Text, View } from 'react-native';
 import Button from '~UI/Button';
-import { ITask } from '~types/tasks';
-import i18n from '~translations/i18n';
+import { EDIT_TASK_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
+import i18n from '~translations/i18n';
+import { ITask } from '~types/tasks';
 import showRelativeDate from '~utils/relativeDate';
 import styles from './styles';
 
@@ -27,25 +28,29 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
     navigation.goBack();
   };
 
+  const onTaskEdit = () => {
+    navigation.navigate(EDIT_TASK_ROUTE, { taskId: id });
+  };
+
   return (
     <View style={styles.content}>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
+          <Text selectable style={styles.title}>{title}</Text>
         </View>
 
         <ScrollView style={styles.scrollWrapper} keyboardShouldPersistTaps='handled'>
           <View>
             <View style={styles.block}>
               <Text style={[styles.label, styles.bold]}>{`${t('tasks:taskStatus')}: `}</Text>
-              <Text style={styles.label}>{t(`tasks:${status}`)}</Text>
+              <Text selectable style={styles.label}>{t(`tasks:${status}`)}</Text>
             </View>
           </View>
 
           <View>
             <View style={styles.block}>
               <Text style={[styles.label, styles.bold]}>{`${t('tasks:createdAt')}: `}</Text>
-              <Text style={styles.label}>{displayDate(created_at)}</Text>
+              <Text selectable style={styles.label}>{displayDate(created_at)}</Text>
             </View>
           </View>
 
@@ -53,7 +58,7 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
             <View>
               <View style={styles.block}>
                 <Text style={[styles.label, styles.bold]}>{`${t('tasks:completedAt')}: `}</Text>
-                <Text style={styles.label}>{displayDate(completed_at)}</Text>
+                <Text selectable style={styles.label}>{displayDate(completed_at)}</Text>
               </View>
             </View>
           )}
@@ -63,7 +68,7 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
               <View style={styles.block}>
                 <View>
                   <Text style={[styles.label, styles.bold]}>{`${t('tasks:taskDescription')}: `}</Text>
-                  <Text style={styles.label}>{description}</Text>
+                  <Text selectable style={styles.label}>{description}</Text>
                 </View>
               </View>
             </View>
@@ -71,6 +76,7 @@ const FullTask = ({ task, removeTask }: FullTaskProps) => {
         </ScrollView>
         <View style={styles.footerButtonsWrapper}>
           <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
+          <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskEdit} title={t('common:edit')} />
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onTaskRemove} title={t('common:remove')} />
         </View>
       </View>
