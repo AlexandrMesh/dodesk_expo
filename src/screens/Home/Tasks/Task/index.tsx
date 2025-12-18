@@ -11,7 +11,6 @@ import { COMPLETED, TODO } from '~constants/statuses';
 import colors from '~styles/colors';
 import i18n from '~translations/i18n';
 import { ITask } from '~types/tasks';
-import CheckBox from '~UI/CheckBox';
 
 import VoiceTaskButton from '../../VoiceTaskButton';
 import styles from './styles';
@@ -102,7 +101,11 @@ const SubtaskItem = memo(({ subtask, isSubtaskCompleted, onPress, onCheckPress }
         </View>
       </TouchableHighlight>
       <Pressable style={styles.subtaskCheckBox} onPress={onCheckPress}>
-        <CheckBox color={isSubtaskCompleted ? colors.neutral_medium : ''} isChecked={isSubtaskCompleted} />
+        <Ionicons
+          name={isSubtaskCompleted ? 'checkmark-circle' : 'ellipse-outline'}
+          size={28}
+          color={isSubtaskCompleted ? colors.success : colors.neutral_medium}
+        />
       </Pressable>
     </Animated.View>
   );
@@ -410,7 +413,11 @@ const Task = ({
         </TouchableHighlight>
         <View>
           <Pressable style={styles.checkBoxWrapper} onPress={onPress}>
-            <CheckBox color={completed ? colors.neutral_medium : ''} isChecked={completed} />
+            <Ionicons
+              name={completed ? 'checkmark-circle' : 'ellipse-outline'}
+              size={32}
+              color={completed ? colors.success : colors.neutral_medium}
+            />
           </Pressable>
         </View>
       </View>

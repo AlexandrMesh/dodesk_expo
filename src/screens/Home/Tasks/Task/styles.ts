@@ -89,8 +89,8 @@ export default StyleSheet.create({
     lineHeight: 24
   },
   checkBoxWrapper: {
-    paddingHorizontal: 5,
-    paddingVertical: 5
+    paddingHorizontal: 8,
+    paddingVertical: 8
   },
   completedTitle: {
     textDecorationLine: 'line-through',
@@ -167,6 +167,7 @@ export default StyleSheet.create({
     marginLeft: 4
   },
   subtaskCheckBox: {
-    paddingHorizontal: 5
+    paddingHorizontal: 8,
+    paddingVertical: 8
   }
 });
