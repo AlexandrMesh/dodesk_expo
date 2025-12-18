@@ -1,11 +1,12 @@
 import React, { memo, useCallback } from 'react';
+
 import { SectionList, Text, View } from 'react-native';
-import { ADD_TASK_ROUTE } from '~constants/routes';
+
 import { COMPLETED, TODO } from '~constants/statuses';
-import AddTaskButton from '~screens/Home/AddTaskButton';
-import VoiceTaskButton from '~screens/Home/VoiceTaskButton';
+import FloatingActionButtons from '~screens/Home/FloatingActionButtons';
 import { IList } from '~types/lists';
 import { ITask } from '~types/tasks';
+
 import EmptyList from '../EmptyList';
 import Task from '../Task';
 import styles from './styles';
@@ -25,12 +26,9 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
 
   const getKeyExtractor = useCallback((item: ITask) => item.id, []);
 
-  const handleSubtaskPress = useCallback(
-    (taskId: string, status: string) => {
-      updateTaskStatus({ taskId, status, completed_at: new Date().getTime() });
-    },
-    []
-  );
+  const handleSubtaskPress = useCallback((taskId: string, status: string) => {
+    updateTaskStatus({ taskId, status, completed_at: new Date().getTime() });
+  }, []);
 
   const renderItem = useCallback(
     ({ item }: { item: ITask }) => (
@@ -45,7 +43,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
         onParentComplete={() => updateTaskStatus({ taskId: item.id, status: COMPLETED, completed_at: new Date().getTime() })}
       />
     ),
-    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress]
+    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress],
   );
 
   const renderSectionHeader = useCallback(
@@ -61,7 +59,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
         </View>
       </View>
     ),
-    []
+    [],
   );
 
   return (
@@ -78,8 +76,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
       ) : (
         <EmptyList />
       )}
-      <VoiceTaskButton selectedList={selectedList} addTask={addTask} />
-      <AddTaskButton route={ADD_TASK_ROUTE} status={TODO} />
+      <FloatingActionButtons selectedList={selectedList} addTask={addTask} />
     </View>
   );
 };

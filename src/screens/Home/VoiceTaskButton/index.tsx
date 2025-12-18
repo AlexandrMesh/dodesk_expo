@@ -21,9 +21,10 @@ import styles from './styles';
 type VoiceTaskButtonProps = {
   selectedList: IList;
   addTask: (params: ITask) => unknown;
+  isInline?: boolean; // Для использования внутри FloatingActionButtons
 };
 
-const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
+const VoiceTaskButton = ({ selectedList, addTask, isInline = false }: VoiceTaskButtonProps) => {
   const { t } = useTranslation(['tasks', 'common']);
   const [isListening, setIsListening] = useState(false);
   const lastTranscriptRef = useRef<string>('');
@@ -222,7 +223,7 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={isInline ? styles.inlineContainer : styles.container}>
       {isListening && (
         <>
           {renderWave(wave1, 0)}

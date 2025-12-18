@@ -11,9 +11,14 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  inlineContainer: {
+    width: 64,
+    height: 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   voiceButton: {
     backgroundColor: colors.planned,
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 64,
