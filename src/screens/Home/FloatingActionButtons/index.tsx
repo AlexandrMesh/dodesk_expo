@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
-import React, { useRef, useState } from 'react';
-import { Animated, Pressable, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, BackHandler, Pressable, View } from 'react-native';
 
 import { ADD_TASK_ROUTE } from '~constants/routes';
 import { TODO } from '~constants/statuses';
@@ -16,15 +16,52 @@ import styles from './styles';
 type FloatingActionButtonsProps = {
   selectedList: IList;
   addTask: (task: ITask) => unknown;
+  onTaskAdded?: () => void;
 };
 
-const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsProps) => {
+const FloatingActionButtons = ({ selectedList, addTask, onTaskAdded }: FloatingActionButtonsProps) => {
   const navigation = useNavigation<any>();
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Анимация для кнопок
   const voiceButtonAnimation = useRef(new Animated.Value(0)).current;
   const textButtonAnimation = useRef(new Animated.Value(0)).current;
+
+  const closeMenu = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    Animated.parallel([
+      Animated.spring(voiceButtonAnimation, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 9,
+        delay: 50,
+      }),
+      Animated.spring(textButtonAnimation, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 9,
+        delay: 0,
+      }),
+    ]).start();
+
+    setIsExpanded(false);
+  };
+
+  // Обработка системной кнопки "назад"
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isExpanded) {
+        closeMenu();
+        return true; // Предотвращаем дефолтное поведение
+      }
+      return false; // Разрешаем дефолтное поведение
+    });
+
+    return () => backHandler.remove();
+  }, [isExpanded, voiceButtonAnimation, textButtonAnimation]);
 
   const toggleMenu = () => {
     const toValue = isExpanded ? 0 : 1;
@@ -111,7 +148,7 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
           style={[styles.actionButton, voiceButtonTransform]} 
           pointerEvents={isExpanded ? 'auto' : 'none'}
         >
-          <VoiceTaskButton selectedList={selectedList} addTask={addTask} isInline />
+          <VoiceTaskButton selectedList={selectedList} addTask={addTask} isInline onTaskAdded={onTaskAdded} />
         </Animated.View>
 
         {/* Кнопка текстового ввода */}

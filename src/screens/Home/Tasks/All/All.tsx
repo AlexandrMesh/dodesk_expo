@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 
 import { SectionList, Text, View } from 'react-native';
 
@@ -23,6 +23,17 @@ type AllProps = {
 const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedList, addTask }: AllProps) => {
   const currentDate = new Date();
   const completed_at = currentDate.getTime();
+  const sectionListRef = useRef<SectionList>(null);
+
+  const scrollToTop = useCallback(() => {
+    if (sectionListRef.current && sectionedTasks.length > 0) {
+      sectionListRef.current.scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
+        animated: true,
+      });
+    }
+  }, [sectionedTasks]);
 
   const getKeyExtractor = useCallback((item: ITask) => item.id, []);
 
@@ -66,6 +77,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
     <View style={styles.wrapper}>
       {tasks.length > 0 ? (
         <SectionList
+          ref={sectionListRef}
           initialNumToRender={30}
           keyExtractor={getKeyExtractor}
           sections={sectionedTasks}
@@ -76,7 +88,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
       ) : (
         <EmptyList />
       )}
-      <FloatingActionButtons selectedList={selectedList} addTask={addTask} />
+      <FloatingActionButtons selectedList={selectedList} addTask={addTask} onTaskAdded={scrollToTop} />
     </View>
   );
 };

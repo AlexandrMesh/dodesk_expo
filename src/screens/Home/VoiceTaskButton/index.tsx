@@ -22,9 +22,10 @@ type VoiceTaskButtonProps = {
   selectedList: IList;
   addTask: (params: ITask) => unknown;
   isInline?: boolean; // Для использования внутри FloatingActionButtons
+  onTaskAdded?: () => void; // Callback после добавления задачи
 };
 
-const VoiceTaskButton = ({ selectedList, addTask, isInline = false }: VoiceTaskButtonProps) => {
+const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded }: VoiceTaskButtonProps) => {
   const { t } = useTranslation(['tasks', 'common']);
   const [isListening, setIsListening] = useState(false);
   const lastTranscriptRef = useRef<string>('');
@@ -145,6 +146,13 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false }: VoiceTaskB
       language: i18n.language,
       parentId: null,
     });
+
+    // Скроллим к верху списка после добавления задачи
+    if (onTaskAdded) {
+      setTimeout(() => {
+        onTaskAdded();
+      }, 100);
+    }
   };
 
   const startListening = async () => {
