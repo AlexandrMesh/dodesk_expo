@@ -3,7 +3,7 @@ import {
     ExpoSpeechRecognitionModule,
     useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable } from 'react-native';
 import 'react-native-get-random-values';
@@ -23,22 +23,33 @@ type VoiceTaskButtonProps = {
 const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
   const { t } = useTranslation(['tasks', 'common']);
   const [isListening, setIsListening] = useState(false);
+  const lastTranscriptRef = useRef<string>('');
+  const shouldCreateTaskRef = useRef<boolean>(false);
 
   useSpeechRecognitionEvent('result', (event) => {
+    // Сохраняем последний результат, но НЕ создаем задачу сразу
     const transcript = event.results[0]?.transcript || '';
     if (transcript) {
-      handleVoiceResult(transcript);
+      lastTranscriptRef.current = transcript;
     }
   });
 
   useSpeechRecognitionEvent('error', (event) => {
     console.error('Speech recognition error:', event);
     setIsListening(false);
+    lastTranscriptRef.current = '';
+    shouldCreateTaskRef.current = false;
     Alert.alert(t('common:error'), t('tasks:voiceError'));
   });
 
   useSpeechRecognitionEvent('end', () => {
     setIsListening(false);
+    // Создаем задачу только если пользователь отпустил кнопку намеренно
+    if (shouldCreateTaskRef.current && lastTranscriptRef.current) {
+      handleVoiceResult(lastTranscriptRef.current);
+      lastTranscriptRef.current = '';
+    }
+    shouldCreateTaskRef.current = false;
   });
 
   const handleVoiceResult = (transcript: string) => {
@@ -91,42 +102,57 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
       const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
       if (!result.granted) {
         Alert.alert(t('common:error'), t('tasks:voicePermissionDenied'));
-        return;
+        return false;
       }
 
+      lastTranscriptRef.current = '';
+      shouldCreateTaskRef.current = true;
       setIsListening(true);
+      
       ExpoSpeechRecognitionModule.start({
         lang: i18n.language === 'ru' ? 'ru-RU' : 'en-US',
         interimResults: true,
         maxAlternatives: 1,
         continuous: false,
       });
+      
+      return true;
     } catch (error) {
       console.error('Error starting speech recognition:', error);
       setIsListening(false);
+      shouldCreateTaskRef.current = false;
       Alert.alert(t('common:error'), t('tasks:voiceError'));
+      return false;
     }
   };
 
   const stopListening = () => {
+    shouldCreateTaskRef.current = true;
     ExpoSpeechRecognitionModule.stop();
-    setIsListening(false);
   };
 
-  const handlePress = () => {
+  const handlePressIn = () => {
+    // Начинаем запись при нажатии
+    startListening();
+  };
+
+  const handlePressOut = () => {
+    // Останавливаем запись при отпускании
     if (isListening) {
       stopListening();
-    } else {
-      startListening();
     }
   };
 
   return (
-    <Pressable style={[styles.voiceButton, isListening && styles.voiceButtonActive]} onPress={handlePress}>
+    <Pressable 
+      style={[styles.voiceButton, isListening && styles.voiceButtonActive]} 
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
       <Ionicons 
-        name={isListening ? 'stop-circle' : 'mic'} 
+        name={isListening ? 'mic' : 'mic-outline'} 
         size={28} 
-        color={isListening ? colors.error : colors.neutral_light} 
+        color={isListening ? colors.neutral_white : colors.neutral_light} 
       />
     </Pressable>
   );
