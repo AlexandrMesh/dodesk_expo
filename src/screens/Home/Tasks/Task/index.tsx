@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import React, { memo, useState } from 'react';
-import { Pressable, Text, TouchableHighlight, View } from 'react-native';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { Animated, Pressable, Text, TouchableHighlight, View } from 'react-native';
 import { ADD_TASK_ROUTE, FULL_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
 import colors from '~styles/colors';
@@ -27,6 +27,55 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
   const hasSubtasks = subtasks.length > 0;
   const completedSubtasksCount = subtasks.filter(t => t.status === COMPLETED).length;
   const allSubtasksCompleted = hasSubtasks && completedSubtasksCount === subtasks.length;
+  
+  // Анимация для новых задач
+  const borderAnimation = useRef(new Animated.Value(0)).current;
+  const glowAnimation = useRef(new Animated.Value(0)).current;
+  const [isNewTask, setIsNewTask] = useState(false);
+
+  useEffect(() => {
+    // Проверяем, является ли задача новой (создана менее 2 секунд назад)
+    const taskAge = Date.now() - updated_at;
+    if (taskAge < 2000 && !completed) {
+      setIsNewTask(true);
+      
+      // Анимация мигающего зеленого бордера
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(borderAnimation, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+          Animated.timing(borderAnimation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+        ]),
+        { iterations: 3 } // 3 мигания = 1.8 секунды
+      ).start(() => {
+        setIsNewTask(false);
+      });
+
+      // Анимация свечения
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(glowAnimation, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+          Animated.timing(glowAnimation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+        ]),
+        { iterations: 3 }
+      ).start();
+    }
+  }, []);
 
   const handleSubtaskPress = (taskId: string, newStatus: string) => {
     onSubtaskPress?.(taskId, newStatus);
@@ -45,8 +94,27 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
     navigation.navigate(ADD_TASK_ROUTE, { status: TODO, parentId: id });
   };
 
+  const animatedBorderColor = borderAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [completed ? colors.success : colors.in_progress, colors.success],
+  });
+
+  const animatedBackgroundColor = glowAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(27, 181, 114, 0)', 'rgba(27, 181, 114, 0.15)'],
+  });
+
   return (
-    <View style={[styles.task, completed && styles.taskCompleted]}>
+    <Animated.View 
+      style={[
+        styles.task, 
+        completed && styles.taskCompleted,
+        isNewTask && {
+          borderLeftColor: animatedBorderColor,
+          backgroundColor: animatedBackgroundColor,
+        }
+      ]}
+    >
       <View style={styles.taskTitleWrapper}>
         <View style={styles.leftButtons}>
           <Pressable style={styles.addSubtaskButton} onPress={handleAddSubtask}>
@@ -118,7 +186,7 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
           })}
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 };
 

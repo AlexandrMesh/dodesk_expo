@@ -2,14 +2,20 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 15,
+    right: 90,
+    width: 64,
+    height: 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   voiceButton: {
     backgroundColor: colors.planned,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 15,
-    right: 90,
     width: 64,
     height: 64,
     borderRadius: 50,
@@ -20,9 +26,18 @@ export default StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5
+    elevation: 5,
+    zIndex: 2,
   },
   voiceButtonActive: {
     backgroundColor: colors.error
+  },
+  wave: {
+    position: 'absolute',
+    width: 64,
+    height: 64,
+    borderRadius: 50,
+    backgroundColor: colors.error,
+    zIndex: 1,
   }
 });

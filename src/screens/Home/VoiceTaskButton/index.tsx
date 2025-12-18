@@ -1,18 +1,21 @@
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Animated, Pressable, View } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
-import {
-    ExpoSpeechRecognitionModule,
-    useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
-import React, { useRef, useState } from 'react';
+import * as Haptics from 'expo-haptics';
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable } from 'react-native';
+
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+
 import { TODO } from '~constants/statuses';
 import colors from '~styles/colors';
 import i18n from '~translations/i18n';
 import { IList } from '~types/lists';
 import { ITask } from '~types/tasks';
+
 import styles from './styles';
 
 type VoiceTaskButtonProps = {
@@ -25,6 +28,11 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
   const [isListening, setIsListening] = useState(false);
   const lastTranscriptRef = useRef<string>('');
   const shouldCreateTaskRef = useRef<boolean>(false);
+
+  // Анимация волн
+  const wave1 = useRef(new Animated.Value(0)).current;
+  const wave2 = useRef(new Animated.Value(0)).current;
+  const wave3 = useRef(new Animated.Value(0)).current;
 
   useSpeechRecognitionEvent('result', (event) => {
     // Сохраняем последний результат, но НЕ создаем задачу сразу
@@ -39,25 +47,67 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
     setIsListening(false);
     lastTranscriptRef.current = '';
     shouldCreateTaskRef.current = false;
-    Alert.alert(t('common:error'), t('tasks:voiceError'));
   });
 
   useSpeechRecognitionEvent('end', () => {
     setIsListening(false);
-    // Создаем задачу только если пользователь отпустил кнопку намеренно
+    // Создаем задачу если был результат
     if (shouldCreateTaskRef.current && lastTranscriptRef.current) {
       handleVoiceResult(lastTranscriptRef.current);
-      lastTranscriptRef.current = '';
     }
+    lastTranscriptRef.current = '';
     shouldCreateTaskRef.current = false;
   });
 
+  // Анимация волн при записи
+  useEffect(() => {
+    if (isListening) {
+      const createWaveAnimation = (wave: Animated.Value, delay: number) => {
+        return Animated.loop(
+          Animated.sequence([
+            Animated.delay(delay),
+            Animated.timing(wave, {
+              toValue: 1,
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(wave, {
+              toValue: 0,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
+        );
+      };
+
+      const animations = Animated.parallel([createWaveAnimation(wave1, 0), createWaveAnimation(wave2, 500), createWaveAnimation(wave3, 1000)]);
+
+      animations.start();
+
+      return () => {
+        animations.stop();
+        wave1.setValue(0);
+        wave2.setValue(0);
+        wave3.setValue(0);
+      };
+    }
+  }, [isListening]);
+
+  // Очистка при размонтировании
+  useEffect(() => {
+    return () => {
+      if (isListening) {
+        ExpoSpeechRecognitionModule.stop();
+      }
+    };
+  }, [isListening]);
+
   const handleVoiceResult = (transcript: string) => {
     setIsListening(false);
-    
+
     // Парсим команду: "добавь задачу НАЗВАНИЕ", "создай задачу НАЗВАНИЕ", "задача НАЗВАНИЕ" или просто "НАЗВАНИЕ"
     let taskTitle = transcript;
-    
+
     // Удаляем начальные фразы типа "добавь задачу", "создай задачу", "новая задача", "задача"
     const patterns = [
       /^добавь задачу\s+/i,
@@ -69,70 +119,73 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
       /^new task\s+/i,
       /^task\s+/i,
     ];
-    
+
     for (const pattern of patterns) {
       taskTitle = taskTitle.replace(pattern, '');
     }
 
     if (taskTitle.trim().length < 2) {
-      Alert.alert(t('common:error'), t('tasks:voiceTaskTooShort'));
       return;
     }
 
     // Создаем задачу
     const currentDate = new Date();
     const created_at = currentDate.getTime();
+    const taskTitleTrimmed = taskTitle.trim();
+
     addTask({
       id: uuidv4(),
-      title: taskTitle.trim(),
+      title: taskTitleTrimmed,
       status: TODO,
       description: '',
       created_at,
       completed_at: 0,
       listId: selectedList?.id,
       language: i18n.language,
-      parentId: null
+      parentId: null,
     });
-
-    Alert.alert(t('common:success'), `${t('tasks:voiceTaskAdded')}: "${taskTitle.trim()}"`);
   };
 
   const startListening = async () => {
     try {
       const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
       if (!result.granted) {
-        Alert.alert(t('common:error'), t('tasks:voicePermissionDenied'));
         return false;
       }
+
+      // Вибрация при старте записи
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
       lastTranscriptRef.current = '';
       shouldCreateTaskRef.current = true;
       setIsListening(true);
-      
+
       ExpoSpeechRecognitionModule.start({
         lang: i18n.language === 'ru' ? 'ru-RU' : 'en-US',
         interimResults: true,
         maxAlternatives: 1,
         continuous: false,
+        requiresOnDeviceRecognition: false,
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error starting speech recognition:', error);
       setIsListening(false);
       shouldCreateTaskRef.current = false;
-      Alert.alert(t('common:error'), t('tasks:voiceError'));
       return false;
     }
   };
 
   const stopListening = () => {
-    shouldCreateTaskRef.current = true;
-    ExpoSpeechRecognitionModule.stop();
+    if (isListening) {
+      shouldCreateTaskRef.current = true;
+      ExpoSpeechRecognitionModule.stop();
+    }
   };
 
   const handlePressIn = () => {
-    // Начинаем запись при нажатии
+    // Сразу начинаем запись без задержки
     startListening();
   };
 
@@ -143,18 +196,44 @@ const VoiceTaskButton = ({ selectedList, addTask }: VoiceTaskButtonProps) => {
     }
   };
 
-  return (
-    <Pressable 
-      style={[styles.voiceButton, isListening && styles.voiceButtonActive]} 
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-    >
-      <Ionicons 
-        name={isListening ? 'mic' : 'mic-outline'} 
-        size={28} 
-        color={isListening ? colors.neutral_white : colors.neutral_light} 
+  const renderWave = (wave: Animated.Value, index: number) => {
+    const scale = wave.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.8 + index * 0.2],
+    });
+
+    const opacity = wave.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [0.6, 0.3, 0],
+    });
+
+    return (
+      <Animated.View
+        key={index}
+        style={[
+          styles.wave,
+          {
+            transform: [{ scale }],
+            opacity,
+          },
+        ]}
       />
-    </Pressable>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {isListening && (
+        <>
+          {renderWave(wave1, 0)}
+          {renderWave(wave2, 1)}
+          {renderWave(wave3, 2)}
+        </>
+      )}
+      <Pressable style={[styles.voiceButton, isListening && styles.voiceButtonActive]} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+        <Ionicons name={isListening ? 'mic' : 'mic-outline'} size={28} color={isListening ? colors.neutral_white : colors.neutral_light} />
+      </Pressable>
+    </View>
   );
 };
 
