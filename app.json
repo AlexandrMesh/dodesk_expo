@@ -30,7 +30,10 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.dodesk",
       "usesCleartextTraffic": true,
-      "versionCode": 9
+      "versionCode": 9,
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -52,7 +55,8 @@
           }
         }
       ],
-      "expo-updates"
+      "expo-updates",
+      "expo-speech-recognition"
     ],
     "experiments": {
       "typedRoutes": true,

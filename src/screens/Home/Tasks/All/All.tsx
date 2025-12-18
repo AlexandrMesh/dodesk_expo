@@ -3,6 +3,8 @@ import { SectionList, Text, View } from 'react-native';
 import { ADD_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
 import AddTaskButton from '~screens/Home/AddTaskButton';
+import VoiceTaskButton from '~screens/Home/VoiceTaskButton';
+import { IList } from '~types/lists';
 import { ITask } from '~types/tasks';
 import EmptyList from '../EmptyList';
 import Task from '../Task';
@@ -13,9 +15,11 @@ type AllProps = {
   sectionedTasks: { completed: boolean; completedCount: number; count: number; title: string; data: ITask[] }[];
   updateTaskStatus: ({ taskId, status, completed_at }: { taskId: string; status: string; completed_at: number }) => unknown;
   subtasksMap: Record<string, ITask[]>;
+  selectedList: IList;
+  addTask: (task: ITask) => unknown;
 };
 
-const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap }: AllProps) => {
+const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedList, addTask }: AllProps) => {
   const currentDate = new Date();
   const completed_at = currentDate.getTime();
 
@@ -74,6 +78,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap }: AllProps)
       ) : (
         <EmptyList />
       )}
+      <VoiceTaskButton selectedList={selectedList} addTask={addTask} />
       <AddTaskButton route={ADD_TASK_ROUTE} status={TODO} />
     </View>
   );

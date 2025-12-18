@@ -17,5 +17,7 @@
   "updateAppVersionDescription": "Please update your application to the latest version",
   "update": "Update",
   "confirmDelete": "Delete task?",
-  "confirmDeleteMessage": "This action cannot be undone"
+  "confirmDeleteMessage": "This action cannot be undone",
+  "error": "Error",
+  "success": "Success"
 }

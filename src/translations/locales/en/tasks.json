@@ -15,5 +15,9 @@
   "addSubtask": "+ Sub",
   "forTask": "For task",
   "task": "Task",
-  "subtask": "Subtask"
+  "subtask": "Subtask",
+  "voiceError": "Speech recognition error. Please try again.",
+  "voicePermissionDenied": "Microphone permission is required",
+  "voiceTaskTooShort": "Task name is too short. Please try again.",
+  "voiceTaskAdded": "Task added"
 }
