@@ -16,6 +16,98 @@ import CheckBox from '~UI/CheckBox';
 import VoiceTaskButton from '../../VoiceTaskButton';
 import styles from './styles';
 
+type SubtaskItemProps = {
+  subtask: ITask;
+  isSubtaskCompleted: boolean;
+  onPress: () => void;
+  onCheckPress: () => void;
+};
+
+const SubtaskItem = memo(({ subtask, isSubtaskCompleted, onPress, onCheckPress }: SubtaskItemProps) => {
+  const subtaskBorderAnimation = useRef(new Animated.Value(0)).current;
+  const subtaskGlowAnimation = useRef(new Animated.Value(0)).current;
+  const [isNewSubtask, setIsNewSubtask] = useState(false);
+
+  useEffect(() => {
+    const taskAge = Date.now() - subtask.created_at;
+    if (taskAge < 2000 && !isSubtaskCompleted) {
+      setIsNewSubtask(true);
+
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(subtaskBorderAnimation, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+          Animated.timing(subtaskBorderAnimation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+        ]),
+        { iterations: 3 },
+      ).start(() => {
+        setIsNewSubtask(false);
+      });
+
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(subtaskGlowAnimation, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+          Animated.timing(subtaskGlowAnimation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+          }),
+        ]),
+        { iterations: 3 },
+      ).start();
+    }
+  }, []);
+
+  const animatedSubtaskBorderColor = subtaskBorderAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [isSubtaskCompleted ? colors.success : colors.planned, colors.success],
+  });
+
+  const animatedSubtaskBackgroundColor = subtaskGlowAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(27, 181, 114, 0)', 'rgba(27, 181, 114, 0.1)'],
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.subtask,
+        isSubtaskCompleted && styles.subtaskCompleted,
+        isNewSubtask && {
+          borderLeftColor: animatedSubtaskBorderColor,
+          backgroundColor: animatedSubtaskBackgroundColor,
+        },
+      ]}
+    >
+      <TouchableHighlight style={styles.subtaskTitleWrapper} onPress={onPress}>
+        <View>
+          <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]} numberOfLines={1}>
+            {subtask.title}
+          </Text>
+          <View style={styles.subtaskFooter}>
+            <Ionicons name='time-outline' size={10} color={colors.neutral_medium} />
+            <Text style={styles.subtaskCreatedAt}>{new Date(subtask.created_at).toLocaleTimeString(i18n.language)}</Text>
+          </View>
+        </View>
+      </TouchableHighlight>
+      <Pressable style={styles.subtaskCheckBox} onPress={onCheckPress}>
+        <CheckBox color={isSubtaskCompleted ? colors.neutral_medium : ''} isChecked={isSubtaskCompleted} />
+      </Pressable>
+    </Animated.View>
+  );
+});
+
 type TaskProps = {
   id: string;
   completed: boolean;
@@ -170,6 +262,11 @@ const Task = ({
       parentId: id,
     };
     addTask?.(subtaskWithParent);
+
+    // Открываем список подзадач если он был закрыт
+    if (!expanded) {
+      setExpanded(true);
+    }
   };
 
   // Обработка системной кнопки "назад" для закрытия меню
@@ -320,27 +417,20 @@ const Task = ({
 
       {hasSubtasks && expanded && (
         <View style={styles.subtasksContainer}>
-          {subtasks.map((subtask) => {
-            const isSubtaskCompleted = subtask.status === COMPLETED;
-            return (
-              <View key={subtask.id} style={[styles.subtask, isSubtaskCompleted && styles.subtaskCompleted]}>
-                <TouchableHighlight style={styles.subtaskTitleWrapper} onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: subtask.id })}>
-                  <View>
-                    <Text style={[styles.subtaskTitle, isSubtaskCompleted && styles.completedTitle]} numberOfLines={1}>
-                      {subtask.title}
-                    </Text>
-                    <View style={styles.subtaskFooter}>
-                      <Ionicons name='time-outline' size={10} color={colors.neutral_medium} />
-                      <Text style={styles.subtaskCreatedAt}>{new Date(subtask.created_at).toLocaleTimeString(i18n.language)}</Text>
-                    </View>
-                  </View>
-                </TouchableHighlight>
-                <Pressable style={styles.subtaskCheckBox} onPress={() => handleSubtaskPress(subtask.id, isSubtaskCompleted ? TODO : COMPLETED)}>
-                  <CheckBox color={isSubtaskCompleted ? colors.neutral_medium : ''} isChecked={isSubtaskCompleted} />
-                </Pressable>
-              </View>
-            );
-          })}
+          {[...subtasks]
+            .sort((a, b) => b.created_at - a.created_at)
+            .map((subtask) => {
+              const isSubtaskCompleted = subtask.status === COMPLETED;
+              return (
+                <SubtaskItem
+                  key={subtask.id}
+                  subtask={subtask}
+                  isSubtaskCompleted={isSubtaskCompleted}
+                  onPress={() => navigation.navigate(FULL_TASK_ROUTE, { taskId: subtask.id })}
+                  onCheckPress={() => handleSubtaskPress(subtask.id, isSubtaskCompleted ? TODO : COMPLETED)}
+                />
+              );
+            })}
         </View>
       )}
     </Animated.View>
