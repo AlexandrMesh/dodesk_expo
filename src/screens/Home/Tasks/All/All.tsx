@@ -52,9 +52,11 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
         subtasks={subtasksMap[item.id] || []}
         onSubtaskPress={handleSubtaskPress}
         onParentComplete={() => updateTaskStatus({ taskId: item.id, status: COMPLETED, completed_at: new Date().getTime() })}
+        addTask={addTask}
+        selectedList={selectedList}
       />
     ),
-    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress],
+    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress, addTask, selectedList],
   );
 
   const renderSectionHeader = useCallback(

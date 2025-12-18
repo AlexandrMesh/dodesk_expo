@@ -5,8 +5,6 @@ import { Animated, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
-import { useTranslation } from 'react-i18next';
-
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,10 +21,10 @@ type VoiceTaskButtonProps = {
   addTask: (params: ITask) => unknown;
   isInline?: boolean; // Для использования внутри FloatingActionButtons
   onTaskAdded?: () => void; // Callback после добавления задачи
+  isSmall?: boolean; // Маленький размер для подзадач
 };
 
-const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded }: VoiceTaskButtonProps) => {
-  const { t } = useTranslation(['tasks', 'common']);
+const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded, isSmall = false }: VoiceTaskButtonProps) => {
   const [isListening, setIsListening] = useState(false);
   const lastTranscriptRef = useRef<string>('');
   const shouldCreateTaskRef = useRef<boolean>(false);
@@ -35,6 +33,57 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded 
   const wave1 = useRef(new Animated.Value(0)).current;
   const wave2 = useRef(new Animated.Value(0)).current;
   const wave3 = useRef(new Animated.Value(0)).current;
+
+  const handleVoiceResult = (transcript: string) => {
+    setIsListening(false);
+
+    // Парсим команду: "добавь задачу НАЗВАНИЕ", "создай задачу НАЗВАНИЕ", "задача НАЗВАНИЕ" или просто "НАЗВАНИЕ"
+    let taskTitle = transcript;
+
+    // Удаляем начальные фразы типа "добавь задачу", "создай задачу", "новая задача", "задача"
+    const patterns = [
+      /^добавь задачу\s+/i,
+      /^создай задачу\s+/i,
+      /^новая задача\s+/i,
+      /^задача\s+/i,
+      /^add task\s+/i,
+      /^create task\s+/i,
+      /^new task\s+/i,
+      /^task\s+/i,
+    ];
+
+    for (const pattern of patterns) {
+      taskTitle = taskTitle.replace(pattern, '');
+    }
+
+    if (taskTitle.trim().length < 2) {
+      return;
+    }
+
+    // Создаем задачу
+    const currentDate = new Date();
+    const created_at = currentDate.getTime();
+    const taskTitleTrimmed = taskTitle.trim();
+
+    addTask({
+      id: uuidv4(),
+      title: taskTitleTrimmed,
+      status: TODO,
+      description: '',
+      created_at,
+      completed_at: 0,
+      listId: selectedList?.id,
+      language: i18n.language,
+      parentId: null,
+    });
+
+    // Скроллим к верху списка после добавления задачи
+    if (onTaskAdded) {
+      setTimeout(() => {
+        onTaskAdded();
+      }, 100);
+    }
+  };
 
   useSpeechRecognitionEvent('result', (event) => {
     // Сохраняем последний результат, но НЕ создаем задачу сразу
@@ -93,7 +142,7 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded 
         wave3.setValue(0);
       };
     }
-  }, [isListening]);
+  }, [isListening, wave1, wave2, wave3]);
 
   // Очистка при размонтировании
   useEffect(() => {
@@ -103,57 +152,6 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded 
       }
     };
   }, [isListening]);
-
-  const handleVoiceResult = (transcript: string) => {
-    setIsListening(false);
-
-    // Парсим команду: "добавь задачу НАЗВАНИЕ", "создай задачу НАЗВАНИЕ", "задача НАЗВАНИЕ" или просто "НАЗВАНИЕ"
-    let taskTitle = transcript;
-
-    // Удаляем начальные фразы типа "добавь задачу", "создай задачу", "новая задача", "задача"
-    const patterns = [
-      /^добавь задачу\s+/i,
-      /^создай задачу\s+/i,
-      /^новая задача\s+/i,
-      /^задача\s+/i,
-      /^add task\s+/i,
-      /^create task\s+/i,
-      /^new task\s+/i,
-      /^task\s+/i,
-    ];
-
-    for (const pattern of patterns) {
-      taskTitle = taskTitle.replace(pattern, '');
-    }
-
-    if (taskTitle.trim().length < 2) {
-      return;
-    }
-
-    // Создаем задачу
-    const currentDate = new Date();
-    const created_at = currentDate.getTime();
-    const taskTitleTrimmed = taskTitle.trim();
-
-    addTask({
-      id: uuidv4(),
-      title: taskTitleTrimmed,
-      status: TODO,
-      description: '',
-      created_at,
-      completed_at: 0,
-      listId: selectedList?.id,
-      language: i18n.language,
-      parentId: null,
-    });
-
-    // Скроллим к верху списка после добавления задачи
-    if (onTaskAdded) {
-      setTimeout(() => {
-        onTaskAdded();
-      }, 100);
-    }
-  };
 
   const startListening = async () => {
     try {
@@ -230,17 +228,21 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded 
     );
   };
 
+  const containerStyle = isSmall ? styles.smallContainer : isInline ? styles.inlineContainer : styles.container;
+  const buttonStyle = isSmall ? styles.smallVoiceButton : styles.voiceButton;
+  const iconSize = isSmall ? 20 : 28;
+
   return (
-    <View style={isInline ? styles.inlineContainer : styles.container}>
-      {isListening && (
+    <View style={containerStyle}>
+      {isListening && !isSmall && (
         <>
           {renderWave(wave1, 0)}
           {renderWave(wave2, 1)}
           {renderWave(wave3, 2)}
         </>
       )}
-      <Pressable style={[styles.voiceButton, isListening && styles.voiceButtonActive]} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-        <Ionicons name={isListening ? 'mic' : 'mic-outline'} size={28} color={isListening ? colors.neutral_white : colors.neutral_light} />
+      <Pressable style={[buttonStyle, isListening && styles.voiceButtonActive]} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+        <Ionicons name={isListening ? 'mic' : 'mic-outline'} size={iconSize} color={isListening ? colors.neutral_white : colors.neutral_light} />
       </Pressable>
     </View>
   );

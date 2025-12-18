@@ -17,6 +17,13 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  smallContainer: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 102,
+  },
   voiceButton: {
     backgroundColor: colors.planned,
     justifyContent: 'center',
@@ -36,6 +43,23 @@ export default StyleSheet.create({
   },
   voiceButtonActive: {
     backgroundColor: colors.error
+  },
+  smallVoiceButton: {
+    backgroundColor: colors.planned,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 102,
   },
   wave: {
     position: 'absolute',

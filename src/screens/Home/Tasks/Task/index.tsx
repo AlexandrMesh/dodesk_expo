@@ -1,13 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { Animated, Pressable, Text, TouchableHighlight, View } from 'react-native';
+import { Animated, BackHandler, Pressable, Text, TouchableHighlight, View } from 'react-native';
 import { ADD_TASK_ROUTE, FULL_TASK_ROUTE } from '~constants/routes';
 import { COMPLETED, TODO } from '~constants/statuses';
 import colors from '~styles/colors';
 import i18n from '~translations/i18n';
 import { ITask } from '~types/tasks';
 import CheckBox from '~UI/CheckBox';
+import VoiceTaskButton from '../../VoiceTaskButton';
 import styles from './styles';
 
 type TaskProps = {
@@ -19,11 +21,14 @@ type TaskProps = {
   subtasks?: ITask[];
   onSubtaskPress?: (taskId: string, status: string) => unknown;
   onParentComplete?: () => unknown;
+  addTask?: (task: ITask) => unknown;
+  selectedList?: any;
 };
 
-const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubtaskPress, onParentComplete }: TaskProps) => {
+const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubtaskPress, onParentComplete, addTask, selectedList }: TaskProps) => {
   const navigation = useNavigation<any>();
   const [expanded, setExpanded] = useState(true);
+  const [isSubtaskMenuOpen, setIsSubtaskMenuOpen] = useState(false);
   const hasSubtasks = subtasks.length > 0;
   const completedSubtasksCount = subtasks.filter(t => t.status === COMPLETED).length;
   const allSubtasksCompleted = hasSubtasks && completedSubtasksCount === subtasks.length;
@@ -32,6 +37,9 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
   const borderAnimation = useRef(new Animated.Value(0)).current;
   const glowAnimation = useRef(new Animated.Value(0)).current;
   const [isNewTask, setIsNewTask] = useState(false);
+  
+  // Анимация для меню подзадач
+  const subtaskMenuAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Проверяем, является ли задача новой (создана менее 2 секунд назад)
@@ -90,9 +98,65 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
     }
   };
 
-  const handleAddSubtask = () => {
-    navigation.navigate(ADD_TASK_ROUTE, { status: TODO, parentId: id });
+  const toggleSubtaskMenu = () => {
+    const toValue = isSubtaskMenuOpen ? 0 : 1;
+    
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    Animated.timing(subtaskMenuAnimation, {
+      toValue,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    setIsSubtaskMenuOpen(!isSubtaskMenuOpen);
   };
+
+  const closeSubtaskMenu = () => {
+    Animated.timing(subtaskMenuAnimation, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    setIsSubtaskMenuOpen(false);
+  };
+
+  const handleAddSubtask = () => {
+    toggleSubtaskMenu();
+  };
+
+  const handleTextSubtask = () => {
+    closeSubtaskMenu();
+    setTimeout(() => {
+      navigation.navigate(ADD_TASK_ROUTE, { status: TODO, parentId: id });
+    }, 100);
+  };
+
+  // Wrapper для добавления подзадачи с parentId
+  const addSubtaskWithParent = (task: ITask) => {
+    // VoiceTaskButton создает задачу, но мы должны добавить parentId
+    const subtaskWithParent = {
+      ...task,
+      parentId: id,
+    };
+    addTask?.(subtaskWithParent);
+  };
+
+  // Обработка системной кнопки "назад" для закрытия меню
+  useEffect(() => {
+    if (!isSubtaskMenuOpen) return;
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isSubtaskMenuOpen) {
+        closeSubtaskMenu();
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [isSubtaskMenuOpen]);
 
   const animatedBorderColor = borderAnimation.interpolate({
     inputRange: [0, 1],
@@ -117,9 +181,78 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
     >
       <View style={styles.taskTitleWrapper}>
         <View style={styles.leftButtons}>
-          <Pressable style={styles.addSubtaskButton} onPress={handleAddSubtask}>
-            <Ionicons name="add" size={16} color={colors.neutral_medium} />
-          </Pressable>
+          <View style={styles.subtaskMenuContainer}>
+            {/* Кнопка голосового ввода подзадачи */}
+            <Animated.View
+              style={[
+                styles.subtaskMenuButton,
+                {
+                  opacity: subtaskMenuAnimation,
+                  transform: [
+                    {
+                      translateX: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 54],
+                      }),
+                    },
+                    {
+                      scale: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.3, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+              pointerEvents={isSubtaskMenuOpen ? 'auto' : 'none'}
+            >
+              <VoiceTaskButton
+                selectedList={selectedList}
+                addTask={addSubtaskWithParent}
+                isInline
+                isSmall
+                onTaskAdded={closeSubtaskMenu}
+              />
+            </Animated.View>
+
+            {/* Кнопка текстового ввода подзадачи */}
+            <Animated.View
+              style={[
+                styles.subtaskMenuButton,
+                {
+                  opacity: subtaskMenuAnimation,
+                  transform: [
+                    {
+                      translateX: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 108],
+                      }),
+                    },
+                    {
+                      scale: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.3, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+              pointerEvents={isSubtaskMenuOpen ? 'auto' : 'none'}
+            >
+              <Pressable style={styles.textSubtaskButton} onPress={handleTextSubtask}>
+                <Ionicons name="pencil" size={20} color={colors.neutral_light} />
+              </Pressable>
+            </Animated.View>
+
+            {/* Главная кнопка + / × */}
+            <Pressable style={styles.addSubtaskButton} onPress={handleAddSubtask}>
+              <Ionicons 
+                name={isSubtaskMenuOpen ? 'close' : 'add'} 
+                size={16} 
+                color={colors.neutral_medium} 
+              />
+            </Pressable>
+          </View>
           {hasSubtasks && (
             <Pressable style={styles.expandButton} onPress={() => setExpanded(!expanded)}>
               <Ionicons name={expanded ? 'chevron-down' : 'chevron-forward'} size={14} color={colors.neutral_medium} />

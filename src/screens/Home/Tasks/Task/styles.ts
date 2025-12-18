@@ -28,6 +28,19 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginRight: 10
   },
+  subtaskMenuContainer: {
+    position: 'relative',
+    width: 28,
+    height: 28,
+    marginBottom: 6,
+    zIndex: 100,
+  },
+  subtaskMenuButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 101,
+  },
   addSubtaskButton: {
     width: 28,
     height: 28,
@@ -36,7 +49,25 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 6
+    zIndex: 100,
+  },
+  textSubtaskButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.in_progress,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 102,
   },
   titleWrapper: {
     flex: 1,
