@@ -232,13 +232,48 @@ const VoiceTaskButton = ({ selectedList, addTask, isInline = false, onTaskAdded,
   const buttonStyle = isSmall ? styles.smallVoiceButton : styles.voiceButton;
   const iconSize = isSmall ? 20 : 28;
 
+  const renderSmallWave = (wave: Animated.Value, index: number) => {
+    const scale = wave.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 1.5 + index * 0.15],
+    });
+
+    const opacity = wave.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [0.6, 0.3, 0],
+    });
+
+    return (
+      <Animated.View
+        key={index}
+        style={[
+          styles.smallWave,
+          {
+            transform: [{ scale }],
+            opacity,
+          },
+        ]}
+      />
+    );
+  };
+
   return (
     <View style={containerStyle}>
-      {isListening && !isSmall && (
+      {isListening && (
         <>
-          {renderWave(wave1, 0)}
-          {renderWave(wave2, 1)}
-          {renderWave(wave3, 2)}
+          {isSmall ? (
+            <>
+              {renderSmallWave(wave1, 0)}
+              {renderSmallWave(wave2, 1)}
+              {renderSmallWave(wave3, 2)}
+            </>
+          ) : (
+            <>
+              {renderWave(wave1, 0)}
+              {renderWave(wave2, 1)}
+              {renderWave(wave3, 2)}
+            </>
+          )}
         </>
       )}
       <Pressable style={[buttonStyle, isListening && styles.voiceButtonActive]} onPressIn={handlePressIn} onPressOut={handlePressOut}>

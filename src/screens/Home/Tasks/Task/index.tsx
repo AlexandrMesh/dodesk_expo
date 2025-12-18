@@ -196,6 +196,12 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
                       }),
                     },
                     {
+                      translateY: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 10],
+                      }),
+                    },
+                    {
                       scale: subtaskMenuAnimation.interpolate({
                         inputRange: [0, 1],
                         outputRange: [0.3, 1],
@@ -226,6 +232,12 @@ const Task = ({ id, completed, title, updated_at, onPress, subtasks = [], onSubt
                       translateX: subtaskMenuAnimation.interpolate({
                         inputRange: [0, 1],
                         outputRange: [0, 108],
+                      }),
+                    },
+                    {
+                      translateY: subtaskMenuAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 10],
                       }),
                     },
                     {

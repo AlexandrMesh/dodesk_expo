@@ -68,5 +68,13 @@ export default StyleSheet.create({
     borderRadius: 50,
     backgroundColor: colors.error,
     zIndex: 1,
+  },
+  smallWave: {
+    position: 'absolute',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.error,
+    zIndex: 1,
   }
 });
