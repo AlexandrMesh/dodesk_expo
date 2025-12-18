@@ -151,5 +151,59 @@ export default StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: 'rgba(242, 76, 103, 0.15)'
+  },
+  subtasksCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15
+  },
+  subtasksHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)'
+  },
+  subtasksLabel: {
+    color: colors.neutral_medium,
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 8
+  },
+  subtaskItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    marginBottom: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.planned
+  },
+  subtaskItemCompleted: {
+    borderLeftColor: colors.success,
+    opacity: 0.6
+  },
+  subtaskCheckbox: {
+    marginLeft: 12
+  },
+  subtaskContent: {
+    flex: 1
+  },
+  subtaskTitle: {
+    color: colors.neutral_light,
+    fontSize: 16,
+    marginBottom: 4
+  },
+  subtaskTitleCompleted: {
+    color: colors.neutral_medium,
+    textDecorationLine: 'line-through'
+  },
+  subtaskTime: {
+    color: colors.neutral_medium,
+    fontSize: 12
   }
 });

@@ -16,6 +16,7 @@
   "forTask": "For task",
   "task": "Task",
   "subtask": "Subtask",
+  "subtasks": "Subtasks",
   "voiceError": "Speech recognition error. Please try again.",
   "voicePermissionDenied": "Microphone permission is required",
   "voiceTaskTooShort": "Task name is too short. Please try again.",
