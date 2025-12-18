@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 
 import { SectionList, Text, View } from 'react-native';
 
@@ -24,6 +24,7 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
   const currentDate = new Date();
   const completed_at = currentDate.getTime();
   const sectionListRef = useRef<SectionList>(null);
+  const [openSubtaskMenuId, setOpenSubtaskMenuId] = useState<string | null>(null);
 
   const scrollToTop = useCallback(() => {
     if (sectionListRef.current && sectionedTasks.length > 0) {
@@ -34,6 +35,10 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
       });
     }
   }, [sectionedTasks]);
+
+  const handleSubtaskMenuToggle = useCallback((taskId: string | null) => {
+    setOpenSubtaskMenuId(taskId);
+  }, []);
 
   const getKeyExtractor = useCallback((item: ITask) => item.id, []);
 
@@ -54,9 +59,11 @@ const All = ({ tasks, updateTaskStatus, sectionedTasks, subtasksMap, selectedLis
         onParentComplete={() => updateTaskStatus({ taskId: item.id, status: COMPLETED, completed_at: new Date().getTime() })}
         addTask={addTask}
         selectedList={selectedList}
+        openSubtaskMenuId={openSubtaskMenuId}
+        onSubtaskMenuToggle={handleSubtaskMenuToggle}
       />
     ),
-    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress, addTask, selectedList],
+    [completed_at, updateTaskStatus, subtasksMap, handleSubtaskPress, addTask, selectedList, openSubtaskMenuId, handleSubtaskMenuToggle],
   );
 
   const renderSectionHeader = useCallback(
