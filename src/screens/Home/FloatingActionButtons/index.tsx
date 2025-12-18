@@ -33,20 +33,21 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     Animated.parallel([
-      // Анимация выезда кнопки голоса (более плавная)
+      // Анимация выезда кнопки голоса
       Animated.spring(voiceButtonAnimation, {
         toValue,
         useNativeDriver: true,
         tension: 50,
         friction: 9,
+        delay: isExpanded ? 50 : 0, // При закрытии - задержка для голоса
       }),
-      // Анимация выезда кнопки текста (с небольшой задержкой)
+      // Анимация выезда кнопки текста
       Animated.spring(textButtonAnimation, {
         toValue,
         useNativeDriver: true,
         tension: 50,
         friction: 9,
-        delay: isExpanded ? 0 : 50,
+        delay: isExpanded ? 0 : 50, // При открытии - задержка для текста
       }),
       // Анимация оверлея (более плавная)
       Animated.timing(overlayOpacity, {
@@ -77,12 +78,15 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
       },
       {
         scale: voiceButtonAnimation.interpolate({
-          inputRange: [0, 0.5, 1],
-          outputRange: [0, 0.8, 1],
+          inputRange: [0, 0.3, 1],
+          outputRange: [0.3, 0.8, 1],
         }),
       },
     ],
-    opacity: voiceButtonAnimation,
+    opacity: voiceButtonAnimation.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [0, 0.5, 1],
+    }),
   };
 
   const textButtonTransform = {
@@ -95,39 +99,46 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
       },
       {
         scale: textButtonAnimation.interpolate({
-          inputRange: [0, 0.5, 1],
-          outputRange: [0, 0.8, 1],
+          inputRange: [0, 0.3, 1],
+          outputRange: [0.3, 0.8, 1],
         }),
       },
     ],
-    opacity: textButtonAnimation,
+    opacity: textButtonAnimation.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [0, 0.5, 1],
+    }),
   };
 
   return (
     <>
       {/* Оверлей для закрытия меню */}
-      {isExpanded && (
-        <Pressable style={styles.overlay} onPress={toggleMenu}>
-          <Animated.View style={[styles.overlayBackground, { opacity: overlayOpacity }]} />
-        </Pressable>
-      )}
+      <Pressable 
+        style={styles.overlay} 
+        onPress={toggleMenu}
+        pointerEvents={isExpanded ? 'auto' : 'none'}
+      >
+        <Animated.View style={[styles.overlayBackground, { opacity: overlayOpacity }]} />
+      </Pressable>
 
       <View style={styles.container}>
         {/* Кнопка голосового ввода */}
-        {isExpanded && (
-          <Animated.View style={[styles.actionButton, voiceButtonTransform]}>
-            <VoiceTaskButton selectedList={selectedList} addTask={addTask} isInline />
-          </Animated.View>
-        )}
+        <Animated.View 
+          style={[styles.actionButton, voiceButtonTransform]} 
+          pointerEvents={isExpanded ? 'auto' : 'none'}
+        >
+          <VoiceTaskButton selectedList={selectedList} addTask={addTask} isInline />
+        </Animated.View>
 
         {/* Кнопка текстового ввода */}
-        {isExpanded && (
-          <Animated.View style={[styles.actionButton, textButtonTransform]}>
-            <Pressable style={styles.textButton} onPress={handleTextButton}>
-              <Ionicons name="pencil" size={28} color={colors.neutral_light} />
-            </Pressable>
-          </Animated.View>
-        )}
+        <Animated.View 
+          style={[styles.actionButton, textButtonTransform]}
+          pointerEvents={isExpanded ? 'auto' : 'none'}
+        >
+          <Pressable style={styles.textButton} onPress={handleTextButton}>
+            <Ionicons name="pencil" size={28} color={colors.neutral_light} />
+          </Pressable>
+        </Animated.View>
 
         {/* Главная кнопка + / × */}
         <Pressable style={styles.mainButton} onPress={toggleMenu}>
