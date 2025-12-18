@@ -25,7 +25,6 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
   // Анимация для кнопок
   const voiceButtonAnimation = useRef(new Animated.Value(0)).current;
   const textButtonAnimation = useRef(new Animated.Value(0)).current;
-  const overlayOpacity = useRef(new Animated.Value(0)).current;
 
   const toggleMenu = () => {
     const toValue = isExpanded ? 0 : 1;
@@ -48,12 +47,6 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
         tension: 50,
         friction: 9,
         delay: isExpanded ? 0 : 50, // При открытии - задержка для текста
-      }),
-      // Анимация оверлея (более плавная)
-      Animated.timing(overlayOpacity, {
-        toValue,
-        duration: 400,
-        useNativeDriver: true,
       }),
     ]).start();
 
@@ -112,15 +105,6 @@ const FloatingActionButtons = ({ selectedList, addTask }: FloatingActionButtonsP
 
   return (
     <>
-      {/* Оверлей для закрытия меню */}
-      <Pressable 
-        style={styles.overlay} 
-        onPress={toggleMenu}
-        pointerEvents={isExpanded ? 'auto' : 'none'}
-      >
-        <Animated.View style={[styles.overlayBackground, { opacity: overlayOpacity }]} />
-      </Pressable>
-
       <View style={styles.container}>
         {/* Кнопка голосового ввода */}
         <Animated.View 
