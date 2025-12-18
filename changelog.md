@@ -2,6 +2,14 @@
 
 ## dodesk
 
+## 3.1.0
+
+###### 2025-12-18
+
+- [New] Improved UI
+- [New] Added subtasks
+- [New] Added adding tasks by voice
+
 ## 3.0.0
 
 ###### 2025-11-04
