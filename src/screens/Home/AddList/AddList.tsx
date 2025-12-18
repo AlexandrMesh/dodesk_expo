@@ -1,16 +1,16 @@
-import 'react-native-get-random-values';
-import React, { useState } from 'react';
-import { View, ScrollView, Text } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import i18n from '~translations/i18n';
-import Input from '~UI/TextInput';
-import Button from '~UI/Button';
-import { getValidationFailure, validationTypes } from '~utils/validation';
-import { IList } from '~types/lists';
-import { SECONDARY } from '~constants/themes';
 import { TITLE_MAX_LENGTH } from '~constants/lists';
+import colors from '~styles/colors';
+import i18n from '~translations/i18n';
+import { IList } from '~types/lists';
+import Input from '~UI/TextInput';
+import { getValidationFailure, validationTypes } from '~utils/validation';
 import styles from './styles';
 
 type AddListProps = {
@@ -68,16 +68,26 @@ const AddList = ({ addList, selectListId, listData }: AddListProps) => {
     <View style={styles.content}>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('lists:newList')}</Text>
+          <View style={styles.headerLeft}>
+            <View style={styles.typeTag}>
+              <Ionicons name='folder-outline' size={14} color={colors.neutral_white} />
+              <Text style={styles.typeTagText}>{t('lists:newList')}</Text>
+            </View>
+            <Text style={styles.title}>{t('lists:listTitle')}</Text>
+          </View>
         </View>
 
         <ScrollView style={styles.scrollWrapper} keyboardShouldPersistTaps='handled'>
-          <View style={styles.block}>
-            <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>
-                {t('lists:listTitle')} {t('common:required')}
-              </Text>
-              <Text style={styles.inputLabel}>{`${title.trim().length}/${TITLE_MAX_LENGTH}`}</Text>
+          <View style={styles.inputCard}>
+            <View style={styles.inputHeader}>
+              <Ionicons name='create-outline' size={18} color={colors.neutral_medium} />
+              <Text style={styles.inputLabel}>{t('lists:listTitle')}</Text>
+              <Text style={styles.required}>{t('common:required')}</Text>
+            </View>
+            
+            <View style={styles.characterCount}>
+              <Ionicons name='text-outline' size={14} color={colors.neutral_medium} />
+              <Text style={styles.characterCountText}>{`${title.trim().length}/${TITLE_MAX_LENGTH}`}</Text>
             </View>
 
             <Input
@@ -89,10 +99,27 @@ const AddList = ({ addList, selectListId, listData }: AddListProps) => {
               onClear={handleClearTitle}
             />
           </View>
+
+          <View style={styles.infoCard}>
+            <View style={styles.infoRow}>
+              <View style={styles.infoIcon}>
+                <Ionicons name='information-circle-outline' size={20} color={colors.in_progress} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoText}>{t('lists:listInfo')}</Text>
+              </View>
+            </View>
+          </View>
         </ScrollView>
+
         <View style={styles.footerButtonsWrapper}>
-          <Button theme={SECONDARY} style={styles.footerButton} onPress={() => navigation.goBack()} title={t('common:back')} />
-          <Button style={styles.footerButton} onPress={handleAddList} title={t('common:add')} />
+          <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name='arrow-back' size={20} color={colors.neutral_light} />
+          </Pressable>
+          <Pressable style={styles.addButton} onPress={handleAddList}>
+            <Ionicons name='checkmark' size={20} color={colors.neutral_white} />
+            <Text style={styles.addButtonText}>{t('common:add')}</Text>
+          </Pressable>
         </View>
       </View>
     </View>

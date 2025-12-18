@@ -2,6 +2,7 @@
   "enterListTitle": "Enter list title",
   "newList": "New list",
   "listTitle": "Title",
+  "listInfo": "Create a list to group tasks by topics or projects. This will help organize your work.",
   "emptyListDescription": "The task list is empty. Add a task",
   "removeListTitle": "Remove list",
   "removeListDescription": "The list and all tasks in it will be removed",
