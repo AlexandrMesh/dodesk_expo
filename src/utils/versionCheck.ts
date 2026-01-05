@@ -3,9 +3,16 @@ import * as semver from 'semver';
 
 // URL публичного ресурса Яндекс.Диска с конфигом приложения.
 // Из этого ответа берём поле `file` — прямую ссылку на config.json.
-// Путь к файлу: dodesk/config.json
-// ВАЖНО: Замените 'dodesk' на реальный ID публичной папки на Яндекс.Диске
-const YANDEX_CONFIG_RESOURCE_URL = 'https://cloud-api.yandex.net/v1/disk/public/resources?public_key=https://disk.yandex.ru/d/dodesk&path=/config.json';
+//
+// КАК ПОЛУЧИТЬ ID ПАПКИ:
+// 1. Создайте папку на Яндекс.Диске (например, "dodesk")
+// 2. Сделайте её публичной (Поделиться → Публичная ссылка)
+// 3. Скопируйте ссылку вида: https://disk.yandex.ru/d/[ID_ПАПКИ]
+// 4. Замените [YANDEX_DISK_FOLDER_ID] ниже на ID из ссылки
+//
+// Пример: если ссылка https://disk.yandex.ru/d/AoLEwxwE9ksmaw,
+// то ID = AoLEwxwE9ksmaw
+const YANDEX_CONFIG_RESOURCE_URL = `https://cloud-api.yandex.net/v1/disk/public/resources?public_key=https://disk.yandex.ru/d/RirHkyKOLG9Pyw`;
 
 export interface RemoteConfig {
   version: string;
