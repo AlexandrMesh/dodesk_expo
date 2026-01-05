@@ -1,1 +1,1 @@
-export const GET_APP_VERSION_URL = 'https://omegaprokat.ru/dodesk/version.json';
+// Version check moved to versionCheck.ts using Yandex Disk config.json

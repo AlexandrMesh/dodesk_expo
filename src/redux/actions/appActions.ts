@@ -1,25 +1,25 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { GET_APP_VERSION_URL } from '~constants/api';
+import { checkForAppUpdate } from '~utils/versionCheck';
 
 const PREFIX = 'APP';
 
 export const getAppInfo = createAsyncThunk(`${PREFIX}/getAppInfo`, async () => {
   try {
-    const { data } = await axios({
-      method: 'get',
-      url: GET_APP_VERSION_URL,
-      headers: {
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-        Expires: '0'
-      }
-    });
+    const { hasUpdate, latestVersion, updateUrl } = await checkForAppUpdate();
+    
+    // Если нет обновления или не удалось получить версию, возвращаем ошибку
+    if (!hasUpdate || !latestVersion) {
+      return {
+        error: 'endpointIsNotAvailable'
+      };
+    }
+
     return {
-      version: data?.version,
-      updateUrl: data?.updateUrl
+      version: latestVersion,
+      updateUrl: updateUrl || null
     };
   } catch (err) {
+    console.error('Error in getAppInfo:', err);
     return {
       error: 'endpointIsNotAvailable'
     };
