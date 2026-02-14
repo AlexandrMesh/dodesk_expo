@@ -20,14 +20,16 @@
       "prebuildCommand": "expo prebuild --clean",
       "channel": "preview",
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "autoIncrement": true
       }
     },
     "production": {
       "prebuildCommand": "expo prebuild --clean",
       "channel": "production",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "autoIncrement": true
       }
     }
   },
@@ -39,4 +41,3 @@
     }
   }
 }
-

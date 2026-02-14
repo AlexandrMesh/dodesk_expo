@@ -2,6 +2,14 @@
 
 ## dodesk
 
+## 3.1.1
+
+###### 2026-02-14
+
+- [New] Added Yandex Mobile Ads banner at the bottom of the screen (ID: R-M-18728438-1)
+- [Fix] Banner is placed above system navigation area (safe area insets) so it does not overlap system buttons
+- [Chore] EAS build: Android versionCode auto-increment enabled for preview and production
+
 ## 3.1.0
 
 ###### 2025-12-18

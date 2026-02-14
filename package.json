@@ -1,7 +1,7 @@
 {
   "name": "dodesk",
   "main": "index.js",
-  "version": "3.0.0",
+  "version": "3.1.1",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -16,7 +16,8 @@
     "update:preview": "eas update --platform android --channel preview",
     "update:production": "eas update --platform android --channel production",
     "update:list:preview": "eas update:list",
-    "update:list:production": "eas update:list"
+    "update:list:production": "eas update:list",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -68,7 +69,9 @@
     "redux-persist": "^6.0.0",
     "reselect": "^5.1.1",
     "semver": "^7.7.3",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "@react-native-community/netinfo": "^11.4.1",
+    "yandex-mobile-ads": "7.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
@@ -90,7 +93,8 @@
     "eslint-plugin-react-hooks": "^7.0.0",
     "eslint-plugin-react-native": "^5.0.0",
     "prettier": "^3.6.2",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "patch-package": "^8.0.1"
   },
   "private": true
 }

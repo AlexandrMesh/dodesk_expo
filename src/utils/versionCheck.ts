@@ -143,3 +143,4 @@ export const checkForAppUpdate = async (): Promise<{
     };
   }
 };
+
